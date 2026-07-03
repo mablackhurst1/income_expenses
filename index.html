@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="My Plan">
+<meta name="theme-color" content="#0f1729">
+<title>My Investment Plan</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --base:#0f1729;--base2:#162035;--card:#1e2d4a;--card2:#253454;
+  --surface:#f5f2ed;--gold:#c8973a;--gold-l:rgba(200,151,58,.15);
+  --green:#2d7a5c;--green-l:rgba(45,122,92,.18);
+  --red:#b84040;--red-l:rgba(184,64,64,.15);
+  --blue:#2d6a9c;--purple:#7a5c9c;--teal:#2a7a7a;
+  --text:#f5f2ed;--dim:rgba(245,242,237,.55);--dimmer:rgba(245,242,237,.28);
+  --rule:rgba(245,242,237,.08);
+  --st:env(safe-area-inset-top,0px);--sb:env(safe-area-inset-bottom,0px)
+}
+html,body{height:100%;background:var(--base);color:var(--text);font-family:'DM Sans',sans-serif;overflow:hidden;-webkit-font-smoothing:antialiased}
+#app{display:flex;flex-direction:column;height:100%;height:100dvh}
+.app-header{background:var(--base);padding:calc(var(--st) + 14px) 20px 14px;border-bottom:1px solid var(--rule);flex-shrink:0;display:flex;align-items:center;justify-content:space-between}
+.app-title{font-family:'DM Serif Display',serif;font-size:20px;font-style:italic;color:var(--text)}
+.app-title span{color:var(--gold)}
+.header-badge{font-family:'DM Mono',monospace;font-size:10px;color:var(--gold);background:var(--gold-l);padding:4px 8px;border-radius:20px;letter-spacing:.06em}
+.scroll{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:24px}
+.bottom-nav{display:flex;background:var(--base2);border-top:1px solid var(--rule);padding-bottom:var(--sb);flex-shrink:0}
+.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 0 8px;background:none;border:none;color:var(--dimmer);font-family:'DM Sans',sans-serif;font-size:9.5px;font-weight:500;letter-spacing:.04em;cursor:pointer;transition:color .2s}
+.nav-btn.active{color:var(--gold)}
+.nav-icon{font-size:19px;line-height:1}
+.screen{display:none}.screen.active{display:block}
+/* groups */
+.grp{margin:14px 14px 0}
+.grp-label{font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--dimmer);padding:0 4px;margin-bottom:7px}
+.card{background:var(--card);border-radius:14px;overflow:hidden;margin-bottom:10px}
+/* rows */
+.row{display:flex;align-items:center;padding:12px 14px;border-bottom:1px solid var(--rule);gap:10px}
+.row:last-child{border-bottom:none}
+.row-label{flex:1;font-size:13.5px;color:var(--text);line-height:1.3}
+.row-sub{font-size:11px;color:var(--dim);margin-top:1px}
+.field-wrap{display:flex;align-items:center;gap:3px;background:var(--card2);border-radius:8px;padding:6px 9px;min-width:86px}
+.fpfx{font-family:'DM Mono',monospace;font-size:13px;color:var(--gold)}
+.field{font-family:'DM Mono',monospace;font-size:13.5px;color:var(--text);background:none;border:none;outline:none;width:68px;text-align:right;-webkit-appearance:none}
+.fsfx{font-size:10px;color:var(--dimmer);white-space:nowrap}
+/* delete btn */
+.del-btn{width:26px;height:26px;border-radius:50%;background:var(--red-l);border:none;color:var(--red);font-size:16px;line-height:1;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
+/* add button */
+.add-btn{display:flex;align-items:center;gap:8px;width:100%;padding:11px 14px;background:none;border:none;color:var(--gold);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;letter-spacing:.01em}
+.add-btn-icon{width:24px;height:24px;border-radius:50%;background:var(--gold-l);display:flex;align-items:center;justify-content:center;font-size:16px;line-height:1;flex-shrink:0}
+/* toggle */
+.toggle{position:relative;width:42px;height:25px;flex-shrink:0}
+.toggle input{opacity:0;width:0;height:0}
+.tog-track{position:absolute;inset:0;background:var(--card2);border-radius:13px;transition:background .25s}
+.toggle input:checked+.tog-track{background:var(--green)}
+.tog-thumb{position:absolute;top:3px;left:3px;width:19px;height:19px;background:white;border-radius:50%;transition:transform .25s;box-shadow:0 1px 3px rgba(0,0,0,.3)}
+.toggle input:checked~.tog-thumb{transform:translateX(17px)}
+/* plan hero */
+.plan-hero{margin:14px;background:var(--card);border-radius:16px;padding:18px;text-align:center}
+.hero-label{font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--dimmer);margin-bottom:5px}
+.hero-amount{font-family:'DM Serif Display',serif;font-size:46px;color:var(--gold);line-height:1;font-style:italic}
+.hero-sub{font-size:12px;color:var(--dim);margin-top:3px}
+.donut-wrap{position:relative;width:170px;height:170px;margin:16px auto 4px}
+#donutCanvas{width:170px;height:170px}
+.donut-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;pointer-events:none}
+.dc-val{font-family:'DM Serif Display',serif;font-size:20px;color:var(--text);font-style:italic}
+.dc-lbl{font-size:10px;color:var(--dimmer);margin-top:1px}
+.status-bar{margin:0 14px 10px;border-radius:12px;padding:11px 14px;display:flex;align-items:center;justify-content:space-between}
+.status-bar.ok{background:var(--green-l)}.status-bar.warn{background:var(--red-l)}
+.sb-label{font-size:13px}.sb-label.ok{color:#5ec9a0}.sb-label.warn{color:#e07070}
+.sb-amt{font-family:'DM Mono',monospace;font-size:13.5px;font-weight:500}
+.sb-amt.ok{color:#5ec9a0}.sb-amt.warn{color:#e07070}
+.scr-lbl{font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--dimmer);margin:14px 18px 7px}
+/* alloc list */
+.alloc-list{margin:0 14px 10px;display:flex;flex-direction:column;gap:7px}
+.alloc-item{background:var(--card);border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:11px}
+.alloc-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.alloc-info{flex:1}.alloc-name{font-size:13px;color:var(--text);font-weight:500}
+.alloc-desc{font-size:11px;color:var(--dim);margin-top:1px}
+.alloc-right{text-align:right}
+.alloc-mo{font-family:'DM Mono',monospace;font-size:13.5px;color:var(--text)}
+.alloc-yr{font-size:10px;color:var(--dimmer);margin-top:1px}
+/* colour picker row */
+.color-row{display:flex;gap:7px;flex-wrap:wrap;padding:10px 14px}
+.color-swatch{width:26px;height:26px;border-radius:50%;border:2px solid transparent;cursor:pointer;transition:border-color .15s}
+.color-swatch.selected{border-color:white}
+/* portfolio */
+.port-hero{margin:14px;background:var(--card);border-radius:16px;padding:18px}
+.port-hero-top{display:flex;justify-content:space-between;align-items:flex-start}
+.port-total-label{font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--dimmer);margin-bottom:4px}
+.port-total{font-family:'DM Serif Display',serif;font-size:38px;color:var(--gold);font-style:italic;line-height:1}
+.port-gl{font-size:12px;margin-top:4px}
+.port-gl.pos{color:#5ec9a0}.port-gl.neg{color:#e07070}
+.holding-card{background:var(--card);border-radius:14px;margin:0 14px 10px;overflow:hidden}
+.holding-header{display:flex;align-items:center;padding:12px 14px;border-bottom:1px solid var(--rule);gap:10px}
+.holding-ticker{font-family:'DM Mono',monospace;font-size:14px;font-weight:500;color:var(--gold)}
+.holding-name{font-size:12px;color:var(--dim);margin-top:1px}
+.holding-value{font-family:'DM Serif Display',serif;font-size:20px;color:var(--text);font-style:italic;margin-left:auto;text-align:right}
+.holding-gl{font-size:11px;margin-top:1px;text-align:right}
+.holding-inputs{display:grid;grid-template-columns:1fr 1fr 1fr;border-top:1px solid var(--rule)}
+.hi-cell{padding:9px 10px;border-right:1px solid var(--rule)}
+.hi-cell:last-child{border-right:none}
+.hi-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--dimmer);margin-bottom:4px}
+.hi-field{font-family:'DM Mono',monospace;font-size:13px;color:var(--text);background:none;border:none;outline:none;width:100%;-webkit-appearance:none}
+/* summary */
+.sum-card{background:var(--card);border-radius:14px;margin:0 14px 10px;overflow:hidden}
+.sum-row{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-bottom:1px solid var(--rule);font-size:13px}
+.sum-row:last-child{border-bottom:none}
+.sum-row .lbl{color:var(--dim)}.sum-row .val{font-family:'DM Mono',monospace;color:var(--text)}
+.sum-row .val.pos{color:#5ec9a0}.sum-row .val.neg{color:#e07070}.sum-row .val.gold{color:var(--gold)}
+.sum-row.total{background:var(--card2)}.sum-row.total .lbl{color:var(--text);font-weight:500}
+.info-box{background:var(--gold-l);border-radius:12px;margin:0 14px 10px;padding:11px 13px;border-left:3px solid var(--gold)}
+.info-box p{font-size:12px;color:var(--dim);line-height:1.6}
+.info-box strong{color:var(--text)}
+.warn-box{background:var(--red-l);border-radius:12px;margin:0 14px 10px;padding:11px 13px;border-left:3px solid var(--red)}
+.warn-box p{font-size:12px;color:var(--dim);line-height:1.6}
+.warn-box strong{color:var(--text)}
+/* modal */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:100;display:none;align-items:flex-end;justify-content:center}
+.modal-bg.open{display:flex}
+.modal{background:var(--base2);border-radius:20px 20px 0 0;padding:20px 18px calc(var(--sb) + 20px);width:100%;max-width:480px}
+.modal-title{font-family:'DM Serif Display',serif;font-size:18px;font-style:italic;color:var(--text);margin-bottom:16px}
+.modal-field{margin-bottom:12px}
+.modal-label{font-size:11px;color:var(--dim);margin-bottom:5px;letter-spacing:.04em}
+.modal-input{width:100%;background:var(--card);border:1px solid var(--rule);border-radius:10px;padding:10px 12px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;-webkit-appearance:none}
+.modal-input:focus{border-color:var(--gold)}
+.modal-row{display:flex;gap:10px}
+.modal-row .modal-field{flex:1}
+.modal-actions{display:flex;gap:10px;margin-top:16px}
+.modal-cancel{flex:1;padding:12px;background:var(--card);border:none;border-radius:10px;color:var(--dim);font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer}
+.modal-save{flex:2;padding:12px;background:var(--gold);border:none;border-radius:10px;color:#0f1729;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="app-header">
+    <div class="app-title">My <span>Plan</span></div>
+    <div class="header-badge">2026/27</div>
+  </div>
+
+  <div class="scroll">
+
+    <!-- ══ INCOME ══ -->
+    <div class="screen active" id="screen-income">
+      <div class="grp">
+        <div class="grp-label">Your income</div>
+        <div class="card" id="core-income-card">
+          <div class="row">
+            <div class="row-label">Your net monthly pay<div class="row-sub">Tax code 1288L</div></div>
+            <div class="field-wrap"><span class="fpfx">£</span><input class="field" type="number" id="inc_you" value="4865" inputmode="decimal"><span class="fsfx">/mo</span></div>
+          </div>
+          <div class="row">
+            <div class="row-label">Partner net pay<div class="row-sub">After ~£30/mo tax</div></div>
+            <div class="field-wrap"><span class="fpfx">£</span><input class="field" type="number" id="inc_partner" value="791" inputmode="decimal"><span class="fsfx">/mo</span></div>
+          </div>
+          <div class="row">
+            <div class="row-label">Carer's Allowance<div class="row-sub">£86.45/wk · taxable</div></div>
+            <div class="field-wrap"><span class="fpfx">£</span><input class="field" type="number" id="inc_carers" value="375" inputmode="decimal"><span class="fsfx">/mo</span></div>
+          </div>
+          <div class="row">
+            <div class="row-label">DLA<div class="row-sub">Tax-free · needs-based</div></div>
+            <div class="field-wrap"><span class="fpfx">£</span><input class="field" type="number" id="inc_dla" value="846" inputmode="decimal"><span class="fsfx">/mo</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="grp">
+        <div class="grp-label">Additional income</div>
+        <div class="card">
+          <div id="custom-income-rows"></div>
+          <button class="add-btn" onclick="openModal('income')"><span class="add-btn-icon">+</span> Add income source</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ SPENDING ══ -->
+    <div class="screen" id="screen-spending">
+      <div class="grp">
+        <div class="grp-label">Fixed commitments</div>
+        <div class="card">
+          <div class="row"><div class="row-label">Mortgage</div><div class="field-wrap"><span class="fpfx">£</span><input class="field" type="number" id="exp_mortgage" value="1250" inputmode="decimal"><span class="fsfx">/mo</span></div></div>
+          <div class="row"><div class="row-label">Household bills & utilities</div><div class="field-wrap"><span class="fpfx">£</span><input class="field" type="number" id="exp_bills" value="905" inputmode="decimal"><span class="fsfx">/mo</span></div></div>
+          <div id="custom-fixed-rows"></div>
+          <button class="add-btn" onclick="openModal('fixed')"><span class="add-btn-icon">+</span> Add fixed expense</button>
+        </div>
+      </div>
+      <div class="grp">
+        <div class="grp-label">Work travel</div>
+        <div class="card">
+          <div class="row"><div class="row-label">Primary office — train<div class="row-sub">£37.40/wk</div></div><div class="field-wrap"><span class="fpfx">£</span><input class="field" type="number" id="exp_travel1" value="162" inputmode="decimal"><span class="fsfx">/mo</span></div></div>
+          <div class="row"><div class="row-label">Second office<div class="row-sub">May qualify for 40% tax relief</div></div><div class="field-wrap"><span class="fpfx">£</span><input class="field" type="number" id="exp_travel2" value="600" inputmode="decimal"><span class="fsfx">/mo</span></div></div>
+          <div id="custom-travel-rows"></div>
+          <button class="add-btn" onclick="openModal('travel')"><span class="add-btn-icon">+</span> Add travel expense</button>
+        </div>
+      </div>
+      <div class="grp">
+        <div class="grp-label">Personal & lifestyle</div>
+        <div class="card">
+          <div class="row"><div class="row-label">Personal spending — you</div><div class="field-wrap"><span class="fpfx">£</span><input class="field" type="number" id="exp_you_p" value="300" inputmode="decimal"><span class="fsfx">/mo</span></div></div>
+          <div class="row"><div class="row-label">Personal spending — partner</div><div class="field-wrap"><span class="fpfx">£</span><input class="field" type="number" id="exp_partner_p" value="300" inputmode="decimal"><span class="fsfx">/mo</span></div></div>
+          <div class="row"><div class="row-label">Golf membership</div><div class="field-wrap"><span class="fpfx">£</span><input class="field" type="number" id="exp_golf" value="129" inputmode="decimal"><span class="fsfx">/mo</span></div></div>
+          <div class="row"><div class="row-label">PT / gym</div><div class="field-wrap"><span class="fpfx">£</span><input class="field" type="number" id="exp_gym" value="400" inputmode="decimal"><span class="fsfx">/mo</span></div></div>
+          <div class="row"><div class="row-label">Personal transport</div><div class="field-wrap"><span class="fpfx">£</span><input class="field" type="number" id="exp_transport" value="100" inputmode="decimal"><span class="fsfx">/mo</span></div></div>
+          <div id="custom-personal-rows"></div>
+          <button class="add-btn" onclick="openModal('personal')"><span class="add-btn-icon">+</span> Add personal expense</button>
+        </div>
+      </div>
+      <div class="grp">
+        <div class="grp-label">Family living costs</div>
+        <div class="card">
+          <div class="row"><div class="row-label">Groceries</div><div class="field-wrap"><span class="fpfx">£</span><input class="field" type="number" id="exp_food" value="663" inputmode="decimal"><span class="fsfx">/mo</span></div></div>
+          <div class="row"><div class="row-label">Eating out & takeaways</div><div class="field-wrap"><span class="fpfx">£</span><input class="field" type="number" id="exp_dining" value="200" inputmode="decimal"><span class="fsfx">/mo</span></div></div>
+          <div class="row"><div class="row-label">Clothing & shoes</div><div class="field-wrap"><span class="fpfx">£</span><input class="field" type="number" id="exp_clothing" value="150" inputmode="decimal"><span class="fsfx">/mo</span></div></div>
+          <div class="row"><div class="row-label">Children's activities</div><div class="field-wrap"><span class="fpfx">£</span><input class="field" type="number" id="exp_kids" value="100" inputmode="decimal"><span class="fsfx">/mo</span></div></div>
+          <div class="row"><div class="row-label">Household sundries</div><div class="field-wrap"><span class="fpfx">£</span><input class="field" type="number" id="exp_sundries" value="100" inputmode="decimal"><span class="fsfx">/mo</span></div></div>
+          <div class="row"><div class="row-label">Holidays & days out</div><div class="field-wrap"><span class="fpfx">£</span><input class="field" type="number" id="exp_holidays" value="350" inputmode="decimal"><span class="fsfx">/mo</span></div></div>
+          <div class="row"><div class="row-label">Buffer / misc</div><div class="field-wrap"><span class="fpfx">£</span><input class="field" type="number" id="exp_buffer" value="100" inputmode="decimal"><span class="fsfx">/mo</span></div></div>
+          <div id="custom-living-rows"></div>
+          <button class="add-btn" onclick="openModal('living')"><span class="add-btn-icon">+</span> Add living expense</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ PLAN ══ -->
+    <div class="screen" id="screen-plan">
+      <div class="plan-hero">
+        <div class="hero-label">Monthly surplus to invest</div>
+        <div class="hero-amount" id="heroAmount">£1,368</div>
+        <div class="hero-sub">After all income & spending</div>
+        <div class="donut-wrap">
+          <canvas id="donutCanvas" width="340" height="340"></canvas>
+          <div class="donut-center">
+            <div class="dc-val" id="dcVal">£1,368</div>
+            <div class="dc-lbl">per month</div>
+          </div>
+        </div>
+      </div>
+      <div class="status-bar ok" id="statusBar">
+        <span class="sb-label ok" id="sbLabel">Surplus</span>
+        <span class="sb-amt ok" id="sbAmt">£0</span>
+      </div>
+      <div class="scr-lbl">Allocation</div>
+      <div class="alloc-list" id="allocList"></div>
+      <div class="scr-lbl">Investment categories</div>
+      <div style="margin:0 14px 10px">
+        <div class="card" id="investToggles"></div>
+        <div class="card" style="margin-top:8px">
+          <button class="add-btn" onclick="openModal('invest')"><span class="add-btn-icon">+</span> Add investment category</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ PORTFOLIO ══ -->
+    <div class="screen" id="screen-portfolio">
+      <div class="port-hero">
+        <div class="port-hero-top">
+          <div>
+            <div class="port-total-label">Portfolio value</div>
+            <div class="port-total" id="portTotal">£0</div>
+            <div class="port-gl pos" id="portGL">—</div>
+          </div>
+        </div>
+      </div>
+      <div class="scr-lbl">Holdings</div>
+      <div id="holdingsList"></div>
+      <div style="margin:0 14px 10px">
+        <div class="card">
+          <button class="add-btn" onclick="openModal('holding')"><span class="add-btn-icon">+</span> Add holding</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ SUMMARY ══ -->
+    <div class="screen" id="screen-summary">
+      <div class="scr-lbl">Income</div>
+      <div class="sum-card">
+        <div class="sum-row"><span class="lbl">Your net pay</span><span class="val pos" id="s_you">£4,865</span></div>
+        <div class="sum-row"><span class="lbl">Partner net pay</span><span class="val pos" id="s_partner">£791</span></div>
+        <div class="sum-row"><span class="lbl">Carer's Allowance</span><span class="val pos" id="s_carers">£375</span></div>
+        <div class="sum-row"><span class="lbl">DLA</span><span class="val pos" id="s_dla">£846</span></div>
+        <div class="sum-row" id="s_custom_income_rows"></div>
+        <div class="sum-row total"><span class="lbl">Total income</span><span class="val gold" id="s_total_inc">£6,877</span></div>
+      </div>
+      <div class="scr-lbl">Spending</div>
+      <div class="sum-card">
+        <div class="sum-row"><span class="lbl">Fixed commitments</span><span class="val neg" id="s_fixed">−£2,155</span></div>
+        <div class="sum-row"><span class="lbl">Work travel</span><span class="val neg" id="s_travel">−£762</span></div>
+        <div class="sum-row"><span class="lbl">Personal & lifestyle</span><span class="val neg" id="s_personal">−£1,229</span></div>
+        <div class="sum-row"><span class="lbl">Family living</span><span class="val neg" id="s_living">−£1,663</span></div>
+        <div class="sum-row total"><span class="lbl">Total spending</span><span class="val neg" id="s_total_exp">−£5,809</span></div>
+      </div>
+      <div class="scr-lbl">Result</div>
+      <div class="sum-card">
+        <div class="sum-row total"><span class="lbl">Monthly surplus</span><span class="val gold" id="s_surplus">£1,368</span></div>
+      </div>
+      <div class="scr-lbl">Portfolio</div>
+      <div class="sum-card">
+        <div class="sum-row"><span class="lbl">Your Premium Bonds</span><span class="val">£18,000</span></div>
+        <div class="sum-row"><span class="lbl">Partner Premium Bonds</span><span class="val">£25,000</span></div>
+        <div class="sum-row"><span class="lbl">Stocks ISA (VUAG)</span><span class="val">£1,192</span></div>
+        <div class="sum-row"><span class="lbl">Amazon shares (gain)</span><span class="val">£3,087</span></div>
+        <div class="sum-row total"><span class="lbl">Tracked portfolio value</span><span class="val gold" id="s_port_val">—</span></div>
+      </div>
+      <div class="info-box"><p><strong>⚡ Bed & ISA:</strong> Amazon gain is only £87 over the £3k CGT allowance. Sell & rebuy inside ISA — ~£21 tax, all future gains sheltered.</p></div>
+      <div class="info-box"><p><strong>💡 Travel relief:</strong> £600/mo second-office travel may qualify for 40% relief — up to £2,880/year back via self-assessment.</p></div>
+      <div class="warn-box"><p><strong>⚠️ Carer's Allowance cliff:</strong> Partner earns ~£190/week net vs £204 limit. Any pay rise over this removes £4,495/year instantly.</p></div>
+    </div>
+
+  </div><!-- /scroll -->
+
+  <nav class="bottom-nav">
+    <button class="nav-btn active" onclick="showScreen('income',this)"><span class="nav-icon">💷</span>Income</button>
+    <button class="nav-btn" onclick="showScreen('spending',this)"><span class="nav-icon">🧾</span>Spending</button>
+    <button class="nav-btn" onclick="showScreen('plan',this)"><span class="nav-icon">📊</span>Plan</button>
+    <button class="nav-btn" onclick="showScreen('portfolio',this)"><span class="nav-icon">📈</span>Portfolio</button>
+    <button class="nav-btn" onclick="showScreen('summary',this)"><span class="nav-icon">📋</span>Summary</button>
+  </nav>
+</div>
+
+<!-- MODAL -->
+<div class="modal-bg" id="modalBg" onclick="closeModalBg(event)">
+  <div class="modal">
+    <div class="modal-title" id="modalTitle">Add item</div>
+    <div id="modalBody"></div>
+    <div class="modal-actions">
+      <button class="modal-cancel" onclick="closeModal()">Cancel</button>
+      <button class="modal-save" onclick="saveModal()">Add</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── PALETTE ──
+const COLORS = ['#2d7a5c','#c8973a','#2d6a9c','#7a5c9c','#2a7a7a','#b84040','#5a8a9c','#8a6a2a','#4a7a3a','#9c4a6a'];
+
+// ── STATE ──
+let state = {
+  customIncome: [],
+  customFixed: [], customTravel: [], customPersonal: [], customLiving: [],
+  investments: [
+    {id:1, name:'Stocks & Shares ISA', desc:'VWRP / FWRG · global index', color:'#2d7a5c', amount:0, pct:60, mode:'pct', enabled:true, fixed:false},
+    {id:2, name:'Mortgage Overpayment', desc:'Guaranteed return = rate', color:'#7a5c9c', amount:200, pct:0, mode:'fixed', enabled:true, fixed:false},
+    {id:3, name:'Junior ISAs ×2', desc:'£84/child · aged 9 & 12', color:'#c8973a', amount:168, pct:0, mode:'fixed', enabled:true, fixed:false},
+    {id:4, name:'Premium Bonds', desc:'Accessible · NS&I backed', color:'#5a8a9c', amount:0, pct:40, mode:'pct', enabled:true, fixed:false},
+    {id:5, name:'Your SIPP top-up', desc:'40% tax relief', color:'#2d6a9c', amount:200, pct:0, mode:'fixed', enabled:false, fixed:false},
+    {id:6, name:'Partner SIPP', desc:'20% tax relief · no pension yet', color:'#9c4a6a', amount:150, pct:0, mode:'fixed', enabled:false, fixed:false},
+  ],
+  holdings: [
+    {id:1, ticker:'VUAG', name:'Vanguard S&P 500', shares:0, price:0, cost:0},
+    {id:2, ticker:'AMZN', name:'Amazon.com', shares:217, price:0, cost:0},
+  ],
+  nextId: 10,
+};
+
+// Load from storage
+try { const s = localStorage.getItem('myplan_v2'); if(s) state = JSON.parse(s); } catch(e){}
+
+function save() {
+  try { localStorage.setItem('myplan_v2', JSON.stringify(state)); } catch(e){}
+}
+
+// ── NAVIGATION ──
+function showScreen(name, btn) {
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('screen-'+name).classList.add('active');
+  btn.classList.add('active');
+  document.querySelector('.scroll').scrollTop = 0;
+  update();
+}
+
+// ── HELPERS ──
+function v(id){ const e=document.getElementById(id); return e?(parseFloat(e.value)||0):0; }
+function fmt(n){ return (n<0?'−£':'£')+Math.abs(Math.round(n)).toLocaleString(); }
+function fmtP(n){ return '£'+Math.round(n).toLocaleString(); }
+function sumCustom(arr){ return arr.reduce((s,i)=>s+(parseFloat(i.amount)||0),0); }
+
+// ── MAIN CALC ──
+function calc() {
+  const incYou=v('inc_you'), incP=v('inc_partner'), incC=v('inc_carers'), incD=v('inc_dla');
+  const customInc = sumCustom(state.customIncome);
+  const totalInc = incYou+incP+incC+incD+customInc;
+
+  const fixed = v('exp_mortgage')+v('exp_bills')+sumCustom(state.customFixed);
+  const travel = v('exp_travel1')+v('exp_travel2')+sumCustom(state.customTravel);
+  const personal = v('exp_you_p')+v('exp_partner_p')+v('exp_golf')+v('exp_gym')+v('exp_transport')+sumCustom(state.customPersonal);
+  const living = v('exp_food')+v('exp_dining')+v('exp_clothing')+v('exp_kids')+v('exp_sundries')+v('exp_holidays')+v('exp_buffer')+sumCustom(state.customLiving);
+  const totalExp = fixed+travel+personal+living;
+  const surplus = totalInc-totalExp;
+
+  return {totalInc,fixed,travel,personal,living,totalExp,surplus,incYou,incP,incC,incD,customInc};
+}
+
+function buildAllocs(surplus) {
+  const enabled = state.investments.filter(i=>i.enabled);
+  const fixedItems = enabled.filter(i=>i.mode==='fixed');
+  const pctItems = enabled.filter(i=>i.mode==='pct');
+  const totalFixed = fixedItems.reduce((s,i)=>s+(parseFloat(i.amount)||0),0);
+  const remaining = Math.max(0, surplus - totalFixed);
+  const totalPct = pctItems.reduce((s,i)=>s+(parseFloat(i.pct)||0),0);
+
+  return enabled.map(i=>{
+    if(i.mode==='fixed') return {...i, computed: Math.min(parseFloat(i.amount)||0, surplus>0?parseFloat(i.amount)||0:0)};
+    if(totalPct>0) return {...i, computed: Math.round(remaining*(parseFloat(i.pct)||0)/totalPct)};
+    return {...i, computed:0};
+  }).filter(i=>i.computed>0);
+}
+
+// ── PORTFOLIO CALC ──
+function calcPortfolio() {
+  let totalVal=0, totalCost=0;
+  state.holdings.forEach(h=>{
+    const val=(parseFloat(h.shares)||0)*(parseFloat(h.price)||0);
+    const cost=(parseFloat(h.cost)||0)*(parseFloat(h.shares)||0);
+    totalVal+=val; totalCost+=cost;
+  });
+  return {totalVal, totalCost, gl: totalVal-totalCost};
+}
+
+// ── UPDATE UI ──
+function update() {
+  const {totalInc,fixed,travel,personal,living,totalExp,surplus,incYou,incP,incC,incD} = calc();
+
+  // Hero
+  const hEl=document.getElementById('heroAmount');
+  const dcEl=document.getElementById('dcVal');
+  if(hEl){hEl.textContent=fmt(surplus);dcEl.textContent=fmt(surplus);}
+
+  // Status bar
+  const sb=document.getElementById('statusBar');
+  const sbL=document.getElementById('sbLabel');
+  const sbA=document.getElementById('sbAmt');
+  if(sb){
+    if(surplus>=0){
+      sb.className='status-bar ok'; sbL.className='sb-label ok'; sbA.className='sb-amt ok';
+      sbL.textContent='Surplus'; sbA.textContent=fmt(surplus);
+    } else {
+      sb.className='status-bar warn'; sbL.className='sb-label warn'; sbA.className='sb-amt warn';
+      sbL.textContent='Deficit'; sbA.textContent=fmt(surplus);
+    }
+  }
+
+  // Alloc list
+  const al=document.getElementById('allocList');
+  if(al){
+    const allocs=buildAllocs(Math.max(0,surplus));
+    al.innerHTML='';
+    if(allocs.length===0){
+      al.innerHTML='<div style="text-align:center;padding:20px;color:var(--dimmer);font-size:13px">No surplus to allocate</div>';
+    } else {
+      allocs.forEach(a=>{
+        const d=document.createElement('div');
+        d.className='alloc-item';
+        d.innerHTML=`<div class="alloc-dot" style="background:${a.color}"></div>
+          <div class="alloc-info"><div class="alloc-name">${a.name}</div><div class="alloc-desc">${a.desc}</div></div>
+          <div class="alloc-right"><div class="alloc-mo">${fmtP(a.computed)}/mo</div><div class="alloc-yr">${fmtP(a.computed*12)}/yr</div></div>`;
+        al.appendChild(d);
+      });
+    }
+    drawDonut(buildAllocs(Math.max(0,surplus)));
+  }
+
+  // Investment toggles
+  const it=document.getElementById('investToggles');
+  if(it){
+    it.innerHTML='';
+    state.investments.forEach((inv,idx)=>{
+      const r=document.createElement('div');
+      r.className='row';
+      r.style.borderBottom=idx<state.investments.length-1?'1px solid var(--rule)':'none';
+      r.innerHTML=`
+        <div class="alloc-dot" style="background:${inv.color};margin-right:2px"></div>
+        <label class="toggle"><input type="checkbox" ${inv.enabled?'checked':''} onchange="toggleInv(${inv.id},this.checked)"><div class="tog-track"></div><div class="tog-thumb"></div></label>
+        <div class="row-label" style="font-size:13px">${inv.name}<div class="row-sub">${inv.mode==='fixed'?'£'+inv.amount+'/mo fixed':inv.pct+'% of surplus'}</div></div>
+        <button class="del-btn" onclick="deleteInv(${inv.id})" style="margin-left:auto">×</button>`;
+      it.appendChild(r);
+    });
+  }
+
+  // Summary
+  const sYou=document.getElementById('s_you');
+  if(sYou){
+    sYou.textContent=fmtP(incYou);
+    document.getElementById('s_partner').textContent=fmtP(incP);
+    document.getElementById('s_carers').textContent=fmtP(incC);
+    document.getElementById('s_dla').textContent=fmtP(incD);
+    document.getElementById('s_total_inc').textContent=fmtP(totalInc);
+    document.getElementById('s_fixed').textContent='−'+fmtP(fixed);
+    document.getElementById('s_travel').textContent='−'+fmtP(travel);
+    document.getElementById('s_personal').textContent='−'+fmtP(personal);
+    document.getElementById('s_living').textContent='−'+fmtP(living);
+    document.getElementById('s_total_exp').textContent='−'+fmtP(totalExp);
+    document.getElementById('s_surplus').textContent=fmt(surplus);
+  }
+
+  // Portfolio
+  renderHoldings();
+  const {totalVal,totalCost,gl}=calcPortfolio();
+  const pt=document.getElementById('portTotal');
+  if(pt){
+    pt.textContent=fmtP(totalVal);
+    const glEl=document.getElementById('portGL');
+    if(totalCost>0){
+      const pct=((gl/totalCost)*100).toFixed(1);
+      glEl.textContent=(gl>=0?'+':'')+fmt(gl)+' ('+pct+'%)';
+      glEl.className='port-gl '+(gl>=0?'pos':'neg');
+    } else { glEl.textContent=totalVal>0?fmtP(totalVal)+' total value':'Add cost basis to see gain/loss'; glEl.className='port-gl pos'; }
+    const spv=document.getElementById('s_port_val');
+    if(spv) spv.textContent=totalVal>0?fmtP(totalVal):'—';
+  }
+
+  renderCustomRows();
+  save();
+}
+
+function renderCustomRows() {
+  const groups=[
+    ['custom-income-rows', state.customIncome, 'income'],
+    ['custom-fixed-rows', state.customFixed, 'fixed'],
+    ['custom-travel-rows', state.customTravel, 'travel'],
+    ['custom-personal-rows', state.customPersonal, 'personal'],
+    ['custom-living-rows', state.customLiving, 'living'],
+  ];
+  groups.forEach(([id, arr, type])=>{
+    const el=document.getElementById(id); if(!el) return;
+    el.innerHTML='';
+    arr.forEach((item,idx)=>{
+      const r=document.createElement('div');
+      r.className='row';
+      r.innerHTML=`<div class="row-label">${item.name}</div>
+        <div class="field-wrap"><span class="fpfx">£</span>
+        <input class="field" type="number" value="${item.amount}" inputmode="decimal" onchange="updateCustom('${type}',${idx},this.value)">
+        <span class="fsfx">/mo</span></div>
+        <button class="del-btn" onclick="deleteCustom('${type}',${idx})">×</button>`;
+      el.appendChild(r);
+    });
+  });
+}
+
+function renderHoldings() {
+  const list=document.getElementById('holdingsList'); if(!list) return;
+  list.innerHTML='';
+  state.holdings.forEach((h,idx)=>{
+    const val=(parseFloat(h.shares)||0)*(parseFloat(h.price)||0);
+    const cost=(parseFloat(h.cost)||0)*(parseFloat(h.shares)||0);
+    const gl=val-cost;
+    const card=document.createElement('div');
+    card.className='holding-card';
+    card.innerHTML=`
+      <div class="holding-header">
+        <div><div class="holding-ticker">${h.ticker}</div><div class="holding-name">${h.name}</div></div>
+        <div style="margin-left:auto;text-align:right">
+          <div class="holding-value">${val>0?fmtP(val):'—'}</div>
+          ${cost>0?`<div class="holding-gl ${gl>=0?'pos':'neg'}">${gl>=0?'+':''}${fmt(gl)}</div>`:'<div class="holding-gl" style="color:var(--dimmer)">Add cost basis</div>'}
+        </div>
+        <button class="del-btn" style="margin-left:10px" onclick="deleteHolding(${idx})">×</button>
+      </div>
+      <div class="holding-inputs">
+        <div class="hi-cell"><div class="hi-label">Shares</div><input class="hi-field" type="number" value="${h.shares||''}" placeholder="0" inputmode="decimal" onchange="updateHolding(${idx},'shares',this.value)"></div>
+        <div class="hi-cell"><div class="hi-label">Price £</div><input class="hi-field" type="number" value="${h.price||''}" placeholder="0.00" inputmode="decimal" onchange="updateHolding(${idx},'price',this.value)"></div>
+        <div class="hi-cell"><div class="hi-label">Cost £/share</div><input class="hi-field" type="number" value="${h.cost||''}" placeholder="0.00" inputmode="decimal" onchange="updateHolding(${idx},'cost',this.value)"></div>
+      </div>`;
+    list.appendChild(card);
+  });
+}
+
+// ── DONUT ──
+function drawDonut(allocs) {
+  const canvas=document.getElementById('donutCanvas'); if(!canvas) return;
+  const ctx=canvas.getContext('2d');
+  const dpr=window.devicePixelRatio||2;
+  canvas.width=340*dpr; canvas.height=340*dpr;
+  ctx.scale(dpr,dpr);
+  const cx=170,cy=170,r=72,t=20;
+  ctx.clearRect(0,0,340,340);
+  if(!allocs||allocs.length===0){
+    ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);
+    ctx.strokeStyle='rgba(245,242,237,0.08)';ctx.lineWidth=t;ctx.stroke();
+    return;
+  }
+  const total=allocs.reduce((s,a)=>s+a.computed,0);
+  let start=-Math.PI/2;
+  const gap=0.04;
+  allocs.forEach(a=>{
+    const slice=(a.computed/total)*(Math.PI*2-gap*allocs.length);
+    ctx.beginPath();ctx.arc(cx,cy,r,start,start+slice);
+    ctx.strokeStyle=a.color;ctx.lineWidth=t;ctx.lineCap='round';ctx.stroke();
+    start+=slice+gap;
+  });
+}
+
+// ── MUTATIONS ──
+function toggleInv(id,val){ const i=state.investments.find(x=>x.id===id); if(i){i.enabled=val;} update(); }
+function deleteInv(id){ state.investments=state.investments.filter(x=>x.id!==id); update(); }
+function updateCustom(type,idx,val){
+  const map={income:state.customIncome,fixed:state.customFixed,travel:state.customTravel,personal:state.customPersonal,living:state.customLiving};
+  if(map[type]&&map[type][idx]) map[type][idx].amount=parseFloat(val)||0;
+  update();
+}
+function deleteCustom(type,idx){
+  const map={income:state.customIncome,fixed:state.customFixed,travel:state.customTravel,personal:state.customPersonal,living:state.customLiving};
+  if(map[type]) map[type].splice(idx,1);
+  update();
+}
+function updateHolding(idx,field,val){ if(state.holdings[idx]) state.holdings[idx][field]=parseFloat(val)||0; update(); }
+function deleteHolding(idx){ state.holdings.splice(idx,1); update(); }
+
+// ── MODAL ──
+let currentModalType='';
+const SWATCHES = COLORS;
+
+function openModal(type) {
+  currentModalType=type;
+  const bg=document.getElementById('modalBg');
+  const title=document.getElementById('modalTitle');
+  const body=document.getElementById('modalBody');
+  const titles={
+    income:'Add income source', fixed:'Add fixed expense', travel:'Add travel expense',
+    personal:'Add personal expense', living:'Add living expense',
+    invest:'Add investment category', holding:'Add holding'
+  };
+  title.textContent=titles[type]||'Add item';
+
+  if(type==='invest'){
+    body.innerHTML=`
+      <div class="modal-field"><div class="modal-label">Name</div><input class="modal-input" id="m_name" placeholder="e.g. Crypto / Bonds"></div>
+      <div class="modal-field"><div class="modal-label">Description</div><input class="modal-input" id="m_desc" placeholder="e.g. Bitcoin via Coinbase"></div>
+      <div class="modal-row">
+        <div class="modal-field"><div class="modal-label">Mode</div>
+          <select class="modal-input" id="m_mode" onchange="modalModeChange()">
+            <option value="fixed">Fixed £/mo</option>
+            <option value="pct">% of surplus</option>
+          </select>
+        </div>
+        <div class="modal-field"><div class="modal-label" id="m_amt_label">Amount £/mo</div><input class="modal-input" id="m_amount" type="number" placeholder="0" inputmode="decimal"></div>
+      </div>
+      <div class="modal-field"><div class="modal-label">Colour</div>
+        <div class="color-row">${SWATCHES.map((c,i)=>`<div class="color-swatch${i===0?' selected':''}" style="background:${c}" data-color="${c}" onclick="selectColor(this)"></div>`).join('')}</div>
+      </div>`;
+  } else if(type==='holding'){
+    body.innerHTML=`
+      <div class="modal-row">
+        <div class="modal-field"><div class="modal-label">Ticker</div><input class="modal-input" id="m_ticker" placeholder="e.g. VWRP" style="text-transform:uppercase"></div>
+        <div class="modal-field"><div class="modal-label">Name</div><input class="modal-input" id="m_hname" placeholder="Fund name"></div>
+      </div>
+      <div class="modal-row">
+        <div class="modal-field"><div class="modal-label">Shares / Units</div><input class="modal-input" id="m_shares" type="number" placeholder="0" inputmode="decimal"></div>
+        <div class="modal-field"><div class="modal-label">Current price £</div><input class="modal-input" id="m_price" type="number" placeholder="0.00" inputmode="decimal"></div>
+      </div>
+      <div class="modal-field"><div class="modal-label">Cost per share £ (optional)</div><input class="modal-input" id="m_cost" type="number" placeholder="0.00" inputmode="decimal"></div>`;
+  } else {
+    body.innerHTML=`
+      <div class="modal-field"><div class="modal-label">Name</div><input class="modal-input" id="m_name" placeholder="Description"></div>
+      <div class="modal-field"><div class="modal-label">Amount £/month</div><input class="modal-input" id="m_amount" type="number" placeholder="0" inputmode="decimal"></div>`;
+  }
+  bg.classList.add('open');
+  setTimeout(()=>{ const f=document.getElementById('m_name')||document.getElementById('m_ticker'); if(f)f.focus(); },100);
+}
+
+function modalModeChange(){
+  const mode=document.getElementById('m_mode').value;
+  const lbl=document.getElementById('m_amt_label');
+  if(lbl) lbl.textContent=mode==='fixed'?'Amount £/mo':'% of surplus';
+}
+
+function selectColor(el){
+  document.querySelectorAll('.color-swatch').forEach(s=>s.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function closeModal(){ document.getElementById('modalBg').classList.remove('open'); }
+function closeModalBg(e){ if(e.target===document.getElementById('modalBg')) closeModal(); }
+
+function saveModal(){
+  const type=currentModalType;
+  const gi=(id)=>{ const e=document.getElementById(id); return e?e.value.trim():''; };
+  const gn=(id)=>{ const e=document.getElementById(id); return e?(parseFloat(e.value)||0):0; };
+
+  if(type==='invest'){
+    const name=gi('m_name'); if(!name) return;
+    const colorEl=document.querySelector('.color-swatch.selected');
+    const color=colorEl?colorEl.dataset.color:COLORS[0];
+    const mode=gi('m_mode');
+    const amount=gn('m_amount');
+    state.investments.push({
+      id:state.nextId++, name, desc:gi('m_desc'), color,
+      mode, amount:mode==='fixed'?amount:0, pct:mode==='pct'?amount:0,
+      enabled:true, fixed:false
+    });
+  } else if(type==='holding'){
+    const ticker=gi('m_ticker').toUpperCase(); if(!ticker) return;
+    state.holdings.push({id:state.nextId++,ticker,name:gi('m_hname'),shares:gn('m_shares'),price:gn('m_price'),cost:gn('m_cost')});
+  } else {
+    const name=gi('m_name'); if(!name) return;
+    const amount=gn('m_amount');
+    const map={income:state.customIncome,fixed:state.customFixed,travel:state.customTravel,personal:state.customPersonal,living:state.customLiving};
+    if(map[type]) map[type].push({name,amount});
+  }
+  closeModal();
+  update();
+}
+
+// ── EVENTS ──
+document.addEventListener('input', e=>{ if(e.target.matches('.field, #inc_you, #inc_partner, #inc_carers, #inc_dla, [id^="exp_"]')) update(); });
+
+// ── INIT ──
+update();
+</script>
+</body>
+</html>
