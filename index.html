@@ -1,0 +1,1727 @@
+<!DOCTYPE html>
+<!-- v4-namesync -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="My Plan">
+<meta name="theme-color" content="#0f1729">
+<title>My Investment Plan v4</title>
+<style>
+@import url("https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap");
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+:root{
+  --base:#0f1729;--base2:#162035;--card:#1e2d4a;--card2:#253454;
+  --gold:#c8973a;--gold-l:rgba(200,151,58,.15);
+  --green:#2d7a5c;--green-l:rgba(45,122,92,.18);
+  --red:#b84040;--red-l:rgba(184,64,64,.15);
+  --blue:#2d6a9c;--purple:#7a5c9c;--teal:#2a7a7a;
+  --text:#f5f2ed;--dim:rgba(245,242,237,.55);--dimmer:rgba(245,242,237,.28);
+  --rule:rgba(245,242,237,.08);
+  --st:env(safe-area-inset-top,0px);--sb:env(safe-area-inset-bottom,0px)
+}
+html,body{height:100%;background:var(--base);color:var(--text);font-family:'DM Sans',-apple-system,BlinkMacSystemFont,sans-serif;overflow:hidden;-webkit-font-smoothing:antialiased;-webkit-text-size-adjust:none}
+#app{display:flex;flex-direction:column;height:100%;height:100dvh;position:fixed;inset:0}
+.app-header{background:var(--base);padding:calc(var(--st) + 12px) 16px 12px;border-bottom:1px solid var(--rule);flex-shrink:0;display:flex;align-items:center;justify-content:space-between;z-index:10}
+.app-title{font-family:'DM Serif Display',serif;font-size:19px;font-style:italic}
+.app-title span{color:var(--gold)}
+.header-right{display:flex;align-items:center;gap:6px}
+.year-badge{font-family:'DM Mono',monospace;font-size:10px;color:var(--gold);background:var(--gold-l);padding:4px 8px;border-radius:20px}
+.toggle-period{display:flex;background:var(--card2);border-radius:20px;padding:2px}
+.period-btn{padding:4px 9px;border:none;background:none;color:var(--dim);font-family:'DM Sans',sans-serif;font-size:11px;border-radius:18px;cursor:pointer;transition:all .2s}
+.period-btn.active{background:var(--gold);color:#0f1729;font-weight:600}
+.hdr-btn{padding:5px 9px;background:var(--card2);border:none;border-radius:8px;color:var(--dim);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif}
+.scroll{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:8px}
+.bottom-nav{display:flex;background:var(--base2);border-top:1px solid var(--rule);padding-bottom:var(--sb);flex-shrink:0;z-index:10}
+.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 0 7px;background:none;border:none;color:var(--dimmer);font-family:'DM Sans',sans-serif;font-size:9px;font-weight:500;cursor:pointer;transition:color .2s}
+.nav-btn.active{color:var(--gold)}
+.nav-icon{font-size:18px;line-height:1}
+.screen{display:none}.screen.active{display:block}
+.grp{margin:12px 12px 0}
+.grp-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;padding:0 2px}
+.grp-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--dimmer)}
+.grp-total{font-family:'DM Mono',monospace;font-size:11px;color:var(--dim)}
+.card{background:var(--card);border-radius:14px;overflow:hidden;margin-bottom:8px}
+.row{display:flex;align-items:center;padding:11px 13px;border-bottom:1px solid var(--rule);gap:9px}
+.row:last-child{border-bottom:none}
+.row-label{flex:1;font-size:13px;color:var(--text);line-height:1.3}
+.row-sub{font-size:10px;color:var(--dim);margin-top:1px}
+.field-wrap{display:flex;align-items:center;gap:3px;background:var(--card2);border-radius:8px;padding:5px 8px;min-width:82px}
+.fpfx{font-family:'DM Mono',monospace;font-size:12px;color:var(--gold)}
+.field{font-family:'DM Mono',monospace;font-size:13px;color:var(--text);background:none;border:none;outline:none;width:65px;text-align:right;-webkit-appearance:none}
+.name-field{font-size:13px;color:var(--text);background:none;border:none;outline:none;flex:1;font-family:'DM Sans',sans-serif;padding:2px 0;border-bottom:1px solid transparent}
+.name-field:focus{border-bottom:1px solid var(--gold)}
+.fsfx{font-size:9px;color:var(--dimmer);white-space:nowrap}
+.del-btn{width:24px;height:24px;border-radius:50%;background:var(--red-l);border:none;color:var(--red);font-size:15px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
+.add-btn{display:flex;align-items:center;gap:7px;width:100%;padding:10px 13px;background:none;border:none;color:var(--gold);font-family:'DM Sans',sans-serif;font-size:12.5px;font-weight:500;cursor:pointer}
+.add-icon{width:22px;height:22px;border-radius:50%;background:var(--gold-l);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.toggle{position:relative;width:40px;height:24px;flex-shrink:0}
+.toggle input{opacity:0;width:0;height:0}
+.tog-track{position:absolute;inset:0;background:var(--card2);border-radius:12px;transition:background .25s}
+.toggle input:checked+.tog-track{background:var(--green)}
+.tog-thumb{position:absolute;top:3px;left:3px;width:18px;height:18px;background:white;border-radius:50%;transition:transform .25s;box-shadow:0 1px 3px rgba(0,0,0,.3)}
+.toggle input:checked~.tog-thumb{transform:translateX(16px)}
+.plan-hero{margin:12px;background:var(--card);border-radius:16px;padding:16px;text-align:center}
+.hero-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--dimmer);margin-bottom:4px}
+.hero-amount{font-family:'DM Serif Display',serif;font-size:42px;color:var(--gold);line-height:1;font-style:italic}
+.hero-sub{font-size:11px;color:var(--dim);margin-top:2px}
+.donut-wrap{position:relative;width:160px;height:160px;margin:14px auto 2px}
+#donutCanvas{width:160px;height:160px}
+.donut-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;pointer-events:none}
+.dc-val{font-family:'DM Serif Display',serif;font-size:18px;color:var(--text);font-style:italic}
+.dc-lbl{font-size:9px;color:var(--dimmer);margin-top:1px}
+.status-bar{margin:0 12px 8px;border-radius:12px;padding:10px 13px;display:flex;align-items:center;justify-content:space-between}
+.status-bar.ok{background:var(--green-l)}.status-bar.warn{background:var(--red-l)}
+.sb-label{font-size:12px}.sb-label.ok{color:#5ec9a0}.sb-label.warn{color:#e07070}
+.sb-amt{font-family:'DM Mono',monospace;font-size:13px;font-weight:500}
+.sb-amt.ok{color:#5ec9a0}.sb-amt.warn{color:#e07070}
+.scr-lbl{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--dimmer);margin:12px 16px 6px}
+.alloc-list{margin:0 12px 8px;display:flex;flex-direction:column;gap:6px}
+.alloc-item{background:var(--card);border-radius:12px;padding:11px 13px;display:flex;align-items:center;gap:10px}
+.alloc-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.alloc-info{flex:1}.alloc-name{font-size:12.5px;font-weight:500}
+.alloc-desc{font-size:10.5px;color:var(--dim);margin-top:1px}
+.alloc-right{text-align:right}
+.alloc-mo{font-family:'DM Mono',monospace;font-size:13px}
+.alloc-yr{font-size:10px;color:var(--dimmer);margin-top:1px}
+.inv-edit-row{background:var(--card);border-radius:12px;margin:0 12px 6px;overflow:hidden}
+.inv-edit-header{display:flex;align-items:center;padding:10px 13px;gap:9px;border-bottom:1px solid var(--rule)}
+.inv-edit-inputs{display:grid;grid-template-columns:1fr 1fr 1fr}
+.inv-edit-cell{padding:8px 10px;border-right:1px solid var(--rule)}
+.inv-edit-cell:last-child{border-right:none}
+.inv-edit-label{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.08em;text-transform:uppercase;color:var(--dimmer);margin-bottom:4px}
+.inv-edit-wrap{display:flex;align-items:center;gap:2px;background:var(--card2);border-radius:7px;padding:5px 7px}
+.inv-edit-pfx{font-family:'DM Mono',monospace;font-size:11px;color:var(--gold)}
+.inv-edit-input{font-family:'DM Mono',monospace;font-size:12px;color:var(--text);background:none;border:none;outline:none;width:100%;-webkit-appearance:none;min-height:20px}
+.inv-edit-sfx{font-size:9px;color:var(--dimmer);white-space:nowrap}
+.apply-btn{padding:6px 10px;background:var(--green-l);border:1px solid var(--green);border-radius:8px;color:#5ec9a0;font-size:11px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;flex-shrink:0}
+.rec-card{background:var(--card);border-radius:12px;margin:0 12px 8px;padding:13px;border-left:3px solid var(--gold)}
+.rec-card.accepted{border-left-color:var(--green)}
+.rec-pri{font-family:'DM Mono',monospace;font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px}
+.rec-pri.high{color:#e07070}.rec-pri.medium{color:var(--gold)}.rec-pri.low{color:#5ec9a0}
+.rec-title{font-size:13px;font-weight:600;margin-bottom:4px}
+.rec-body{font-size:11.5px;color:var(--dim);line-height:1.6;margin-bottom:8px}
+.rec-impact{font-size:11px;color:var(--gold);margin-bottom:8px;font-weight:500}
+.rec-actions{display:flex;gap:8px}
+.rec-accept{flex:1;padding:8px;background:var(--green);border:none;border-radius:8px;color:white;font-size:12px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif}
+.rec-reject{flex:1;padding:8px;background:var(--red-l);border:none;border-radius:8px;color:#e07070;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif}
+.port-hero{margin:12px;background:var(--card);border-radius:16px;padding:16px}
+.port-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--dimmer);margin-bottom:3px}
+.port-total{font-family:'DM Serif Display',serif;font-size:34px;color:var(--gold);font-style:italic;line-height:1}
+.port-gl{font-size:11px;margin-top:3px}
+.port-gl.pos{color:#5ec9a0}.port-gl.neg{color:#e07070}
+.holding-card{background:var(--card);border-radius:14px;margin:0 12px 8px;overflow:hidden}
+.holding-header{display:flex;align-items:center;padding:11px 13px;border-bottom:1px solid var(--rule);gap:9px}
+.holding-ticker{font-family:'DM Mono',monospace;font-size:13px;font-weight:500;color:var(--gold)}
+.holding-name{font-size:11px;color:var(--dim);margin-top:1px}
+.holding-value{font-family:'DM Serif Display',serif;font-size:18px;font-style:italic;margin-left:auto;text-align:right}
+.holding-gl{font-size:10px;margin-top:1px;text-align:right}
+.holding-inputs{display:grid;grid-template-columns:1fr 1fr 1fr}
+.hi-cell{padding:10px 11px;border-right:1px solid var(--rule);border-top:1px solid var(--rule)}
+.hi-cell:last-child{border-right:none}
+.hi-label{font-family:'DM Mono',monospace;font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--dimmer);margin-bottom:5px}
+.hi-input{font-family:'DM Mono',monospace;font-size:13px;color:var(--text);background:none;border:none;outline:none;width:100%;-webkit-appearance:none;min-height:24px}
+.inv-acc-card{background:var(--card);border-radius:14px;margin:0 12px 8px;overflow:hidden}
+.mort-hero{margin:12px;background:var(--card);border-radius:16px;padding:16px}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.stat-box{background:var(--card2);border-radius:10px;padding:10px 12px}
+.stat-lbl{font-family:'DM Mono',monospace;font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--dimmer);margin-bottom:3px}
+.stat-val{font-family:'DM Serif Display',serif;font-size:20px;color:var(--text);font-style:italic}
+.stat-val.green{color:#5ec9a0}.stat-val.gold{color:var(--gold)}.stat-val.red{color:#e07070}
+.bar-chart{margin:12px;background:var(--card);border-radius:14px;padding:14px}
+.bar-chart-title{font-size:12px;font-weight:600;margin-bottom:10px}
+.bar-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.bar-lbl{font-size:11px;color:var(--dim);width:110px;flex-shrink:0}
+.bar-wrap{flex:1;height:8px;background:var(--card2);border-radius:4px;overflow:hidden}
+.bar-fill{height:100%;border-radius:4px}
+.bar-val{font-family:'DM Mono',monospace;font-size:11px;color:var(--dim);width:62px;text-align:right;flex-shrink:0}
+.debt-card{background:var(--card);border-radius:14px;margin:0 12px 8px;overflow:hidden}
+.debt-header{display:flex;align-items:center;padding:11px 13px;border-bottom:1px solid var(--rule);gap:9px}
+.debt-icon{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.debt-icon.cc{background:rgba(184,64,64,.2)}.debt-icon.loan{background:rgba(45,106,156,.2)}
+.debt-name{font-size:13px;font-weight:600;color:var(--text)}
+.debt-type{font-size:10px;color:var(--dim);margin-top:1px}
+.debt-balance{font-family:'DM Serif Display',serif;font-size:18px;font-style:italic;text-align:right}
+.debt-balance.cc{color:#e07070}.debt-balance.loan{color:#7a9ccc}
+.debt-sub{font-size:10px;color:var(--dim);text-align:right;margin-top:1px}
+.debt-inputs{display:grid;grid-template-columns:1fr 1fr 1fr;border-top:1px solid var(--rule)}
+.di-cell{padding:9px 10px;border-right:1px solid var(--rule)}
+.di-cell:last-child{border-right:none}
+.di-label{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.08em;text-transform:uppercase;color:var(--dimmer);margin-bottom:4px}
+.di-wrap{display:flex;align-items:center;gap:2px;background:var(--card2);border-radius:7px;padding:5px 7px}
+.di-pfx{font-family:'DM Mono',monospace;font-size:11px;color:var(--gold)}
+.di-input{font-family:'DM Mono',monospace;font-size:12px;color:var(--text);background:none;border:none;outline:none;width:100%;-webkit-appearance:none;min-height:20px}
+.di-sfx{font-size:9px;color:var(--dimmer);white-space:nowrap}
+.debt-row{display:flex;align-items:center;padding:9px 13px;border-top:1px solid var(--rule);gap:8px}
+.debt-row-label{flex:1;font-size:12px;color:var(--dim)}
+.debt-detail{display:grid;grid-template-columns:1fr 1fr 1fr;border-top:1px solid var(--rule)}
+.dd-cell{padding:8px 10px;border-right:1px solid var(--rule);text-align:center}
+.dd-cell:last-child{border-right:none}
+.dd-label{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.08em;text-transform:uppercase;color:var(--dimmer);margin-bottom:3px}
+.dd-val{font-family:'DM Mono',monospace;font-size:11.5px;color:var(--text)}
+.progress-bar{flex:1;height:6px;background:var(--card2);border-radius:3px;overflow:hidden}
+.progress-fill{height:100%;border-radius:3px}
+.progress-pct{font-family:'DM Mono',monospace;font-size:10px;color:var(--dim);width:28px;text-align:right;flex-shrink:0}
+.sum-card{background:var(--card);border-radius:14px;margin:0 12px 8px;overflow:hidden}
+.sum-row{display:flex;justify-content:space-between;align-items:center;padding:9px 13px;border-bottom:1px solid var(--rule);font-size:12.5px}
+.sum-row:last-child{border-bottom:none}
+.sum-row .lbl{color:var(--dim)}.sum-row .val{font-family:'DM Mono',monospace;color:var(--text)}
+.sum-row .val.pos{color:#5ec9a0}.sum-row .val.neg{color:#e07070}.sum-row .val.gold{color:var(--gold)}
+.sum-row.total{background:var(--card2)}.sum-row.total .lbl{color:var(--text);font-weight:500}
+.info-box{background:var(--gold-l);border-radius:12px;margin:0 12px 8px;padding:11px 13px;border-left:3px solid var(--gold)}
+.info-box p{font-size:11.5px;color:var(--dim);line-height:1.6}
+.info-box strong{color:var(--text)}
+.warn-box{background:var(--red-l);border-radius:12px;margin:0 12px 8px;padding:11px 13px;border-left:3px solid var(--red)}
+.warn-box p{font-size:11.5px;color:var(--dim);line-height:1.6}
+.warn-box strong{color:var(--text)}
+.color-row{display:flex;gap:6px;flex-wrap:wrap;padding:8px 0}
+.color-swatch{width:24px;height:24px;border-radius:50%;border:2px solid transparent;cursor:pointer}
+.color-swatch.selected{border-color:white}
+.action-bar{display:flex;gap:8px;margin:12px 12px 4px}
+.save-btn{flex:2;padding:11px;background:var(--green);border:none;border-radius:12px;color:white;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer}
+.reset-btn{flex:1;padding:11px;background:var(--red-l);border:none;border-radius:12px;color:#e07070;font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer}
+.toast{position:fixed;bottom:calc(var(--sb) + 80px);left:50%;transform:translateX(-50%);background:var(--green);color:white;padding:10px 20px;border-radius:20px;font-size:13px;font-weight:600;z-index:300;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap}
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;display:none;align-items:flex-end;justify-content:center}
+.modal-bg.open{display:flex}
+.modal{background:var(--base2);border-radius:20px 20px 0 0;padding:18px 16px calc(var(--sb) + 18px);width:100%;max-width:480px;max-height:85vh;overflow-y:auto}
+.modal-title{font-family:'DM Serif Display',serif;font-size:17px;font-style:italic;color:var(--text);margin-bottom:14px}
+.modal-field{margin-bottom:10px}
+.modal-label{font-size:10.5px;color:var(--dim);margin-bottom:4px}
+.modal-input{width:100%;background:var(--card);border:1px solid var(--rule);border-radius:10px;padding:9px 11px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13.5px;outline:none;-webkit-appearance:none}
+.modal-input:focus{border-color:var(--gold)}
+.modal-row{display:flex;gap:8px}
+.modal-row .modal-field{flex:1}
+.modal-actions{display:flex;gap:8px;margin-top:14px}
+.modal-cancel{flex:1;padding:11px;background:var(--card);border:none;border-radius:10px;color:var(--dim);font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer}
+.modal-save{flex:2;padding:11px;background:var(--gold);border:none;border-radius:10px;color:#0f1729;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer}
+.confirm-bg{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:300;display:none;align-items:center;justify-content:center;padding:20px}
+.confirm-bg.open{display:flex}
+.confirm-box{background:var(--base2);border-radius:16px;padding:24px 20px;width:100%;max-width:320px;text-align:center}
+.confirm-title{font-family:'DM Serif Display',serif;font-size:18px;font-style:italic;margin-bottom:8px}
+.confirm-body{font-size:13px;color:var(--dim);line-height:1.6;margin-bottom:20px}
+.confirm-actions{display:flex;gap:10px}
+.confirm-yes{flex:1;padding:11px;background:var(--red);border:none;border-radius:10px;color:white;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer}
+.confirm-no{flex:1;padding:11px;background:var(--card);border:none;border-radius:10px;color:var(--dim);font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer}
+@media print{
+  html,body{height:auto;overflow:visible;background:white;color:black}
+  #app{position:static;display:block;height:auto}
+  .app-header,.bottom-nav,.modal-bg,.confirm-bg,.action-bar,.del-btn,.add-btn,.rec-actions,.hdr-btn,.toggle-period,.apply-btn{display:none!important}
+  .scroll{overflow:visible;height:auto}
+  .screen{display:block!important;page-break-after:always}
+  .screen:last-child{page-break-after:avoid}
+  *{color:#000!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .card,.sum-card,.rec-card,.holding-card,.mort-hero,.bar-chart,.plan-hero,.port-hero,.alloc-item,.debt-card,.inv-edit-row{background:#f0f0f0!important;border:1px solid #ccc!important}
+  .pdf-title{display:block!important;font-size:16px;font-weight:bold;margin:16px 12px 8px;padding:8px 12px;background:#1e2d4a;color:white!important;border-radius:8px}
+}
+.pdf-title{display:none}
+
+.reorder-btns{display:flex;flex-direction:column;gap:2px;flex-shrink:0}
+.reorder-btn{width:20px;height:20px;border-radius:4px;background:var(--card2);border:none;color:var(--dimmer);font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1}
+.reorder-btn:active{background:var(--gold-l);color:var(--gold)}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="app-header">
+    <div class="app-title">My <span>Plan</span></div>
+    <div class="header-right">
+      <div class="toggle-period">
+        <button class="period-btn active" onclick="setPeriod('monthly',this)">Monthly</button>
+        <button class="period-btn" onclick="setPeriod('weekly',this)">Weekly</button>
+      </div>
+      <div class="year-badge" id="yearBadge"></div>
+      <button class="hdr-btn" onclick="exportPDF()">PDF</button>
+    </div>
+  </div>
+  <div class="scroll" id="mainScroll">
+    <div class="screen active" id="screen-income">
+      <div class="pdf-title">Income</div>
+      <div id="income-cats"></div>
+      <div class="grp"><div class="card"><button class="add-btn" onclick="openModal('income-cat')"><span class="add-icon">+</span>Add income category</button></div></div>
+      <div class="grp"><div class="grp-header"><div class="grp-label">Total income</div><div class="grp-total" id="total-inc" style="color:var(--gold)"></div></div></div>
+      <div class="action-bar"><button class="save-btn" onclick="doSave()">Save changes</button><button class="reset-btn" onclick="confirmReset()">Reset</button></div>
+    </div>
+    <div class="screen" id="screen-spending">
+      <div class="pdf-title">Spending</div>
+      <div id="spending-cats"></div>
+      <div class="grp"><div class="card"><button class="add-btn" onclick="openModal('spending-cat')"><span class="add-icon">+</span>Add spending category</button></div></div>
+      <div class="grp"><div class="grp-header"><div class="grp-label">Total spending</div><div class="grp-total" id="total-exp" style="color:#e07070"></div></div></div>
+      <div class="action-bar"><button class="save-btn" onclick="doSave()">Save changes</button><button class="reset-btn" onclick="confirmReset()">Reset</button></div>
+    </div>
+    <div class="screen" id="screen-plan">
+      <div class="pdf-title">Investment Plan</div>
+      <div class="plan-hero">
+        <div class="hero-label" id="planLabel">Residual after savings</div>
+        <div class="hero-amount" id="heroAmt">0</div>
+        <div class="hero-sub" id="heroSub">After all spending including savings</div>
+        <div class="donut-wrap"><canvas id="donutCanvas" width="320" height="320"></canvas><div class="donut-center"><div class="dc-val" id="dcVal">0</div><div class="dc-lbl" id="dcLbl">per month</div></div></div>
+      </div>
+      <div class="status-bar ok" id="statusBar"><span class="sb-label ok" id="sbLabel">Residual</span><span class="sb-amt ok" id="sbAmt">0</span></div>
+      <div class="scr-lbl">Current allocation (from Savings and Investments)</div>
+      <div class="alloc-list" id="savingsAllocList"></div>
+      <div class="scr-lbl">Edit investment strategy</div>
+      <div id="investEditList"></div>
+      <div style="margin:0 12px 8px"><div class="card"><button class="add-btn" onclick="openModal('invest')"><span class="add-icon">+</span>Add investment category</button></div></div>
+      <div class="scr-lbl">Strategy commentary</div>
+      <div id="strategyCommentary"></div>
+      <div class="scr-lbl">Tax rebate opportunities</div>
+      <div id="taxRebates"></div>
+      <div class="scr-lbl">Recommendations</div>
+      <div id="recsContainer"></div>
+      <div class="action-bar"><button class="save-btn" onclick="doSave()">Save changes</button><button class="reset-btn" onclick="confirmReset()">Reset</button></div>
+    </div>
+    <div class="screen" id="screen-portfolio">
+      <div class="pdf-title">Portfolio</div>
+      <div class="port-hero"><div class="port-label">Total portfolio value</div><div class="port-total" id="portTotal">0</div><div class="port-gl" id="portGL"></div></div>
+      <div class="scr-lbl">Investment accounts</div>
+      <div class="inv-acc-card"><div id="inv-acc-rows"></div><button class="add-btn" onclick="openModal('inv-acc')"><span class="add-icon">+</span>Add investment account</button></div>
+      <div class="scr-lbl">Holdings</div>
+      <div id="holdingsList"></div>
+      <div style="margin:0 12px 8px"><div class="card"><button class="add-btn" onclick="openModal('holding')"><span class="add-icon">+</span>Add holding</button></div></div>
+      <div class="action-bar"><button class="save-btn" onclick="doSave()">Save changes</button><button class="reset-btn" onclick="confirmReset()">Reset</button></div>
+    </div>
+    <div class="screen" id="screen-mortgage">
+      <div class="pdf-title">Mortgage</div>
+      <div id="mortAccounts"></div>
+      <div style="margin:8px 12px 0"><div class="card"><button class="add-btn" onclick="addMortAccount()"><span class="add-icon">+</span>Add mortgage sub-account</button></div></div>
+      <div id="mortHero" class="mort-hero"></div>
+      <div id="mortChart" class="bar-chart"></div>
+      <div class="scr-lbl">Overpayment strategy</div>
+      <div id="mortRec" class="card" style="margin:0 12px 8px"></div>
+      <div class="action-bar"><button class="save-btn" onclick="doSave()">Save changes</button><button class="reset-btn" onclick="confirmReset()">Reset</button></div>
+    </div>
+    <div class="screen" id="screen-debt">
+      <div class="pdf-title">Debt Commitments</div>
+      <div id="debtHero" class="mort-hero"></div>
+      <div class="scr-lbl">Credit cards</div>
+      <div id="ccList"></div>
+      <div style="margin:0 12px 8px"><div class="card"><button class="add-btn" onclick="openDebtModal('cc')"><span class="add-icon">+</span>Add credit card</button></div></div>
+      <div class="scr-lbl">Loans</div>
+      <div id="loanList"></div>
+      <div style="margin:0 12px 8px"><div class="card"><button class="add-btn" onclick="openDebtModal('loan')"><span class="add-icon">+</span>Add loan</button></div></div>
+      <div class="scr-lbl">Debt insights</div>
+      <div id="debtInsights"></div>
+      <div class="action-bar"><button class="save-btn" onclick="doSave()">Save changes</button><button class="reset-btn" onclick="confirmReset()">Reset</button></div>
+    </div>
+    <div class="screen" id="screen-summary">
+      <div class="pdf-title">Summary</div>
+      <div id="health-score-section" class="port-hero" style="margin:12px;text-align:center"></div>
+      <div id="health-tips-section" style="margin:0 12px"></div>
+      <div class="scr-lbl">Income</div><div class="sum-card" id="sum-inc"></div>
+      <div class="scr-lbl">Spending</div><div class="sum-card" id="sum-exp"></div>
+      <div class="scr-lbl">Savings and investments</div><div class="sum-card" id="sum-savings-card"></div>
+      <div class="scr-lbl">Result</div>
+      <div class="sum-card">
+        <div class="sum-row"><span class="lbl">Total actively saved</span><span class="val pos" id="sum-savings-total"></span></div>
+        <div class="sum-row"><span class="lbl">Saving rate</span><span class="val pos" id="sum-saving-rate"></span></div>
+        <div class="sum-row total"><span class="lbl" id="sum-lbl">Residual surplus</span><span class="val gold" id="sum-surp">0</span></div>
+      </div>
+      <div class="scr-lbl">Portfolio</div><div class="sum-card" id="sum-port"></div>
+      <div class="scr-lbl">Insights</div><div id="sum-insights"></div>
+    </div>
+  </div>
+  <nav class="bottom-nav">
+    <button class="nav-btn active" onclick="showScreen('income',this)"><span class="nav-icon">&#x1F4B7;</span>Income</button>
+    <button class="nav-btn" onclick="showScreen('spending',this)"><span class="nav-icon">&#x1F9FE;</span>Spending</button>
+    <button class="nav-btn" onclick="showScreen('plan',this)"><span class="nav-icon">&#x1F4CA;</span>Plan</button>
+    <button class="nav-btn" onclick="showScreen('portfolio',this)"><span class="nav-icon">&#x1F4C8;</span>Portfolio</button>
+    <button class="nav-btn" onclick="showScreen('mortgage',this)"><span class="nav-icon">&#x1F3E0;</span>Mortgage</button>
+    <button class="nav-btn" onclick="showScreen('debt',this)"><span class="nav-icon">&#x1F4B3;</span>Debt</button>
+    <button class="nav-btn" onclick="showScreen('summary',this)"><span class="nav-icon">&#x1F4CB;</span>Summary</button>
+  </nav>
+</div>
+<div class="toast" id="toast">Saved</div>
+<div class="modal-bg" id="modalBg" onclick="if(event.target===this)closeModal()">
+  <div class="modal"><div class="modal-title" id="modalTitle">Add</div><div id="modalBody"></div>
+  <div class="modal-actions"><button class="modal-cancel" onclick="closeModal()">Cancel</button><button class="modal-save" onclick="saveModal()">Add</button></div></div>
+</div>
+<div class="modal-bg" id="debtModalBg" onclick="if(event.target===this)closeDebtModal()">
+  <div class="modal"><div class="modal-title" id="debtModalTitle">Add</div><div id="debtModalBody"></div>
+  <div class="modal-actions"><button class="modal-cancel" onclick="closeDebtModal()">Cancel</button><button class="modal-save" onclick="saveDebtModal()">Add</button></div></div>
+</div>
+<div class="confirm-bg" id="confirmBg">
+  <div class="confirm-box">
+    <div class="confirm-title">Reset all data?</div>
+    <div class="confirm-body">This will restore all inputs to original defaults. Your data cannot be recovered after reset.</div>
+    <div class="confirm-actions"><button class="confirm-yes" onclick="doReset()">Reset</button><button class="confirm-no" onclick="closeConfirm()">Cancel</button></div>
+  </div>
+</div>
+<script>
+var DATA_KEY='myplan_data';
+var DATA_VERSION=7;
+var MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+var COLORS_ARR=['#2d7a5c','#c8973a','#2d6a9c','#7a5c9c','#2a7a7a','#b84040','#5a8a9c','#8a6a2a','#4a7a3a','#9c4a6a'];
+var now=new Date();
+document.getElementById('yearBadge').textContent=MONTHS[now.getMonth()]+' '+now.getFullYear();
+
+var DEFAULT={
+  version:DATA_VERSION,period:'monthly',
+  incomeCategories:[
+    {id:1,name:'Employment and Benefits',items:[
+      {id:11,name:'Your net pay',sub:'Tax code 1288L',amount:4865},
+      {id:12,name:'Partner net pay',sub:'After tax',amount:791},
+      {id:13,name:'Carers Allowance',sub:'Taxable income',amount:375},
+      {id:14,name:'DLA',sub:'Tax-free',amount:846}
+    ]}
+  ],
+  spendingCategories:[
+    {id:10,name:'Fixed Commitments',color:'#b84040',items:[
+      {id:101,name:'Mortgage',sub:'',amount:1250},
+      {id:102,name:'Household bills and utilities',sub:'',amount:905}
+    ]},
+    {id:20,name:'Work Travel',color:'#2a7a7a',items:[
+      {id:201,name:'Primary office train',sub:'37.40 per week',amount:162},
+      {id:202,name:'Second office travel',sub:'Temporary workplace - may qualify for 40% tax relief',amount:600}
+    ]},
+    {id:30,name:'Personal and Lifestyle',color:'#7a5c9c',items:[
+      {id:301,name:'Personal spending you',sub:'',amount:300},
+      {id:302,name:'Personal spending partner',sub:'',amount:300},
+      {id:303,name:'Golf membership',sub:'',amount:129},
+      {id:304,name:'PT and gym',sub:'',amount:400},
+      {id:305,name:'Personal transport',sub:'',amount:100}
+    ]},
+    {id:40,name:'Family Living',color:'#2d6a9c',items:[
+      {id:401,name:'Groceries',sub:'',amount:663},
+      {id:402,name:'Eating out and takeaways',sub:'',amount:200},
+      {id:403,name:'Clothing and shoes',sub:'',amount:150},
+      {id:404,name:'Childrens activities',sub:'',amount:100},
+      {id:405,name:'Household sundries',sub:'',amount:100},
+      {id:406,name:'Holidays and days out',sub:'Ring-fenced',amount:350},
+      {id:407,name:'Buffer and misc',sub:'',amount:100}
+    ]},
+    {id:50,name:'Savings and Investments',color:'#2d7a5c',items:[
+      {id:501,name:'Stocks and Shares ISA',sub:'VWRP or FWRG global index',amount:600,invRef:1},
+      {id:502,name:'Junior ISAs x2',sub:'84 per child aged 9 and 12',amount:168,invRef:3},
+      {id:503,name:'Mortgage overpayment',sub:'Auto-synced from Mortgage tab',amount:200,autoSync:'mortgage_over',invRef:2},
+      {id:504,name:'Premium Bonds',sub:'NS and I backed accessible savings',amount:400,invRef:4}
+    ]}
+  ],
+  investments:[
+    {id:1,name:'Stocks and Shares ISA',desc:'VWRP or FWRG global index',color:'#2d7a5c',mode:'fixed',amount:600,pct:0,enabled:true},
+    {id:2,name:'Mortgage Overpayment',desc:'Guaranteed return equals rate',color:'#7a5c9c',mode:'fixed',amount:200,pct:0,enabled:true},
+    {id:3,name:'Junior ISAs x2',desc:'84 per child aged 9 and 12',color:'#c8973a',mode:'fixed',amount:168,pct:0,enabled:true},
+    {id:4,name:'Premium Bonds',desc:'NS and I backed',color:'#5a8a9c',mode:'fixed',amount:400,pct:0,enabled:true},
+    {id:5,name:'Your SIPP top-up',desc:'40% tax relief',color:'#2d6a9c',mode:'fixed',amount:200,pct:0,enabled:false},
+    {id:6,name:'Partner SIPP',desc:'20% tax relief',color:'#9c4a6a',mode:'fixed',amount:150,pct:0,enabled:false}
+  ],
+  holdings:[
+    {id:1,ticker:'VUAG',name:'Vanguard S&P 500 ETF',shares:0,price:0,cost:0},
+    {id:2,ticker:'AMZN',name:'Amazon.com Inc',shares:217,price:0,cost:0}
+  ],
+  invAccounts:[
+    {id:1,name:'Your Premium Bonds',value:18000},
+    {id:2,name:'Partner Premium Bonds',value:25000},
+    {id:3,name:'Stocks ISA VUAG',value:1192}
+  ],
+  mortgageInputs:{balance:220000,term:22,termYears:22,termMonths:0,rate:4.5,over:200},
+  creditCards:[],loans:[],
+  dismissedRecs:[],acceptedRecs:[],nextId:300
+};
+
+function migrateData(d){
+  if(!d)return JSON.parse(JSON.stringify(DEFAULT));
+  if(!Array.isArray(d.incomeCategories))d.incomeCategories=JSON.parse(JSON.stringify(DEFAULT.incomeCategories));
+  if(!Array.isArray(d.spendingCategories))d.spendingCategories=JSON.parse(JSON.stringify(DEFAULT.spendingCategories));
+  if(!Array.isArray(d.investments))d.investments=JSON.parse(JSON.stringify(DEFAULT.investments));
+  if(!Array.isArray(d.holdings))d.holdings=JSON.parse(JSON.stringify(DEFAULT.holdings));
+  if(!Array.isArray(d.invAccounts))d.invAccounts=JSON.parse(JSON.stringify(DEFAULT.invAccounts));
+  if(!Array.isArray(d.creditCards))d.creditCards=[];
+  d.creditCards.forEach(function(c){if(!c.dueDay)c.dueDay=0;if(!c.startDate)c.startDate='';});
+  // Link savings items to investments by name, amount, or position if no invRef exists
+  var savCat=d.spendingCategories?d.spendingCategories.find(function(c){return c.id===50;}):null;
+  if(savCat&&d.investments){
+    savCat.items.forEach(function(item,idx){
+      if(!item.invRef){
+        var matchInv=d.investments.find(function(inv){return inv.name.toLowerCase()===item.name.toLowerCase();});
+        if(!matchInv)matchInv=d.investments.find(function(inv){return (parseFloat(inv.amount)||0)===(parseFloat(item.amount)||0)&&!savCat.items.some(function(other){return other.invRef===inv.id;});});
+        if(!matchInv&&idx<d.investments.length&&!savCat.items.some(function(other){return other.invRef===d.investments[idx].id;}))matchInv=d.investments[idx];
+        if(matchInv){item.invRef=matchInv.id;matchInv.name=item.name;}
+      }
+    });
+  }
+  if(!Array.isArray(d.loans))d.loans=[];
+  if(!d.mortgageInputs)d.mortgageInputs=JSON.parse(JSON.stringify(DEFAULT.mortgageInputs));
+  if(Array.isArray(d.mortgageAccounts))d.mortgageAccounts.forEach(function(a){if(!a.paymentDay)a.paymentDay=0;if(a.termYears==null){a.termYears=parseFloat(a.term)||22;a.termMonths=0;}});
+  if(!Array.isArray(d.dismissedRecs))d.dismissedRecs=[];
+  if(!Array.isArray(d.acceptedRecs))d.acceptedRecs=[];
+  if(!d.nextId)d.nextId=300;
+  if(!d.period)d.period='monthly';
+  if(!d.spendingCategories.find(function(c){return c.id===50;}))
+    d.spendingCategories.push(JSON.parse(JSON.stringify(DEFAULT.spendingCategories.find(function(c){return c.id===50;}))));
+  d.version=DATA_VERSION;
+  return d;
+}
+
+var S;
+try{var raw=localStorage.getItem(DATA_KEY);S=raw?migrateData(JSON.parse(raw)):JSON.parse(JSON.stringify(DEFAULT));}
+catch(e){S=JSON.parse(JSON.stringify(DEFAULT));}
+
+var period=S.period||'monthly';
+var modalType='',activeCatId=null,debtModalType='';
+
+function persist(){try{localStorage.setItem(DATA_KEY,JSON.stringify(S));}catch(e){}}
+
+function setPeriod(p,btn){period=p;S.period=p;document.querySelectorAll('.period-btn').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');update();}
+function toD(m){return period==='weekly'?m*12/52:m;}
+function lbl(){return period==='weekly'?'week':'month';}
+function fmt(n){var a=Math.abs(Math.round(n));return n<0?'('+a.toLocaleString()+')':''+a.toLocaleString();}
+function fmtP(n){return Math.round(Math.abs(n)).toLocaleString();}
+function fmtDec(n,dp){return Math.abs(n).toFixed(dp||2);}
+function fmtCur(n){return n<0?'('+Math.abs(Math.round(n)).toLocaleString()+')':''+Math.round(Math.abs(n)).toLocaleString();}
+
+function showScreen(name,btn){
+  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});
+  document.querySelectorAll('.nav-btn').forEach(function(b){b.classList.remove('active');});
+  document.getElementById('screen-'+name).classList.add('active');
+  btn.classList.add('active');
+  document.getElementById('mainScroll').scrollTop=0;
+  if(name==='plan')setTimeout(drawDonut,50);
+}
+
+function totalInc(){return S.incomeCategories.reduce(function(s,c){return s+c.items.reduce(function(a,i){return a+(parseFloat(i.amount)||0);},0);},0);}
+function totalExp(){
+  // Excludes savings category (id=50) so surplus = income - spending (excl savings)
+  return S.spendingCategories.filter(function(c){return c.id!==50;}).reduce(function(s,c){
+    return s+c.items.reduce(function(a,i){return a+(parseFloat(i.amount)||0);},0);
+  },0);
+}
+function totalSavings(){var sc=S.spendingCategories.find(function(c){return c.id===50;});return sc?sc.items.reduce(function(s,i){return s+(parseFloat(i.amount)||0);},0):0;}
+function surplus(){return totalInc()-totalExp();}
+function residual(){return surplus()-totalSavings();}
+function savingRate(){var inc=totalInc();return inc>0?(totalSavings()/inc)*100:0;}
+
+function syncMortgageOverpayment(){
+  var sc=S.spendingCategories.find(function(c){return c.id===50;});if(!sc)return;
+  var over=(S.mortgageAccounts&&S.mortgageAccounts.length)?S.mortgageAccounts.reduce(function(s,a){return s+(parseFloat(a.over)||0);},0):(S.mortgageInputs?(S.mortgageInputs.over||0):0);
+  var item=sc.items.find(function(i){return i.autoSync==='mortgage_over';});
+  if(item)item.amount=over;
+  else if(over>0)sc.items.push({id:503,name:'Mortgage overpayment',sub:'Auto-synced from Mortgage tab',amount:over,autoSync:'mortgage_over'});
+}
+
+function syncDebt(){
+  var DCID=9999;
+  var ex=S.spendingCategories.find(function(c){return c.id===DCID;});
+  var total=S.creditCards.reduce(function(s,c){return s+(parseFloat(c.monthly)||0);},0)+S.loans.reduce(function(s,l){return s+(parseFloat(l.monthly)||0);},0);
+  if(total<=0){S.spendingCategories=S.spendingCategories.filter(function(c){return c.id!==DCID;});update();return;}
+  if(!ex){S.spendingCategories.push({id:DCID,name:'Debt Commitments',color:'#b84040',items:[]});ex=S.spendingCategories.find(function(c){return c.id===DCID;});}
+  var items=[];
+  S.creditCards.forEach(function(c,i){if(parseFloat(c.monthly)>0)items.push({id:90000+i,name:c.name+(c.payFull?' (paid in full)':' (card)'),sub:c.payFull?'No interest':'APR '+c.apr+'%',amount:Math.round(parseFloat(c.monthly)||0)});});
+  S.loans.forEach(function(l,i){if(parseFloat(l.monthly)>0)items.push({id:91000+i,name:l.name+' (loan)',sub:l.rate+'% pa',amount:Math.round(parseFloat(l.monthly)||0)});});
+  ex.items=items;update();
+}
+
+function applyInvestmentToSavings(id){
+  // Applies strategy fixed amount (or sets it if not present) - sets absolute value
+  var inv=S.investments.find(function(x){return x.id===id;});if(!inv)return;
+  var sc=S.spendingCategories.find(function(c){return c.id===50;});if(!sc)return;
+  var resid2=residual();
+  var amount=inv.mode==='fixed'?(parseFloat(inv.amount)||0):Math.round(resid2*(parseFloat(inv.pct)||0)/100);
+  var existing=sc.items.find(function(i){return i.invRef===inv.id;});
+  if(existing){existing.amount=amount;existing.name=inv.name;}
+  else sc.items.push({id:S.nextId++,name:inv.name,sub:inv.desc,amount:amount,invRef:inv.id});
+  persist();update();showToast('£'+fmtP(amount)+'/mo set in Savings');
+}
+function applyResidualToSavings(suggestions){
+  // Tops up existing savings items by the suggested amounts
+  var sc=S.spendingCategories.find(function(c){return c.id===50;});if(!sc)return;
+  suggestions.forEach(function(sg){
+    var existing=sc.items.find(function(i){return i.invRef===sg.inv.id;});
+    if(existing){
+      existing.amount=Math.round(((parseFloat(existing.amount)||0)+sg.amount)*100)/100;
+    } else {
+      sc.items.push({id:S.nextId++,name:sg.inv.name,sub:sg.inv.desc,amount:sg.amount,invRef:sg.inv.id});
+    }
+  });
+  persist();update();showToast('Savings topped up by residual');
+}
+function applyAllInvestments(){
+  // Legacy - kept for compatibility
+  var resid2=residual();
+  var enabledInvs=S.investments.filter(function(i){return i.enabled;});
+  var weights=enabledInvs.map(function(inv){return inv.mode==='fixed'?(parseFloat(inv.amount)||0):(parseFloat(inv.pct)||0);});
+  var totalWeight=weights.reduce(function(s,w){return s+w;},0)||1;
+  var suggestions=enabledInvs.map(function(inv,i){return{inv:inv,amount:Math.round(resid2*(weights[i]/totalWeight))};}).filter(function(s){return s.amount>0;});
+  applyResidualToSavings(suggestions);
+}
+
+function mortCalcSingle(acc){
+  var bal=parseFloat(acc.balance)||0,termYrs=parseFloat(acc.termYears!=null?acc.termYears:(acc.term||22))||0,termMos=parseFloat(acc.termMonths)||0,yr=termYrs+(termMos/12),rate=parseFloat(acc.rate)||0,over=parseFloat(acc.over)||0;
+  var r=rate/100/12,n=Math.round(termYrs*12+termMos);
+  if(n===0)return{pmt:0,bal:bal,yr:yr,rate:rate,over:over,std:{ti:0,mo:0},ovp:{ti:0,mo:0},saved:0,ms:0,ys:0,mos:0,stdInt:0,ovpInt:0};
+  var pmt=r===0?bal/n:bal*r*Math.pow(1+r,n)/(Math.pow(1+r,n)-1);
+  function am(ex){var b=bal,ti=0,mo=0;while(b>0.01&&mo<600){var ic=b*r,pr=Math.min(pmt+ex-ic,b);if(pr<=0)break;ti+=ic;b-=pr;mo++;}return{ti:ti,mo:mo};}
+  var std=am(0),ovp=am(over),ms=std.mo-ovp.mo;
+  return{pmt:pmt,bal:bal,yr:yr,rate:rate,over:over,std:std,ovp:ovp,saved:std.ti-ovp.ti,ms:ms,ys:Math.floor(ms/12),mos:ms%12,stdInt:std.ti,ovpInt:ovp.ti};
+}
+
+function mortgageAutoUpdate(){
+  // For each mortgage account with a paymentDay set, check if payment day has passed
+  // since last check. If so, reduce balance and term by 1 month.
+  if(!S.mortgageAccounts)return;
+  var now=new Date();
+  S.mortgageAccounts.forEach(function(acc){
+    var pd=parseInt(acc.paymentDay)||0;
+    if(!pd)return;
+    var lastCheck=acc.lastPaymentCheck?new Date(acc.lastPaymentCheck):null;
+    if(!lastCheck){
+      // First time - just record current date
+      acc.lastPaymentCheck=now.toISOString();
+      return;
+    }
+    // Count how many payment days have passed since last check
+    var count=0;
+    var d=new Date(lastCheck.getFullYear(),lastCheck.getMonth(),pd);
+    if(d<=lastCheck)d.setMonth(d.getMonth()+1);
+    while(d<=now&&count<120){
+      count++;
+      d.setMonth(d.getMonth()+1);
+    }
+    if(count>0){
+      // Apply payments: reduce balance and term
+      var bal=parseFloat(acc.balance)||0;
+      var rate=parseFloat(acc.rate)||0;
+      var over=parseFloat(acc.over)||0;
+      var termTotalMo=(parseFloat(acc.termYears!=null?acc.termYears:(acc.term||22))||0)*12+(parseFloat(acc.termMonths)||0);
+      var r=rate/100/12;
+      var pmt=r===0?(termTotalMo>0?bal/termTotalMo:0):bal*r*Math.pow(1+r,termTotalMo)/(Math.pow(1+r,termTotalMo)-1);
+      for(var i=0;i<count&&bal>0.01&&termTotalMo>0;i++){
+        var interest=bal*r;
+        var principal=Math.min(pmt+over-interest,bal);
+        if(principal<=0)break;
+        bal-=principal;
+        termTotalMo--;
+      }
+      acc.balance=Math.max(0,Math.round(bal*100)/100);
+      acc.termYears=Math.floor(Math.max(0,termTotalMo)/12);
+      acc.termMonths=Math.max(0,termTotalMo)%12;
+      acc.lastPaymentCheck=now.toISOString();
+    }
+  });
+}
+function mortgageNextPaymentDate(acc){
+  var pd=parseInt(acc.paymentDay)||0;
+  if(!pd)return '--';
+  var now=new Date();
+  var d=new Date(now.getFullYear(),now.getMonth(),pd);
+  if(d<=now)d.setMonth(d.getMonth()+1);
+  return d.getDate()+' '+MONTHS[d.getMonth()]+' '+d.getFullYear();
+}
+
+function mortCalc(){
+  // Aggregate all accounts
+  var accs=S.mortgageAccounts&&S.mortgageAccounts.length?S.mortgageAccounts:[S.mortgageInputs];
+  var totalBal=accs.reduce(function(s,a){return s+(parseFloat(a.balance)||0);},0);
+  var totalOver=accs.reduce(function(s,a){return s+(parseFloat(a.over)||0);},0);
+  // Blended rate = weighted average by balance
+  var blendedRate=totalBal>0?accs.reduce(function(s,a){return s+(parseFloat(a.rate)||0)*(parseFloat(a.balance)||0);},0)/totalBal:0;
+  // Longest term
+  var maxTerm=accs.reduce(function(m,a){return Math.max(m,(parseFloat(a.termYears!=null?a.termYears:(a.term||22))||0)+(parseFloat(a.termMonths)||0)/12);},0);
+  // Aggregate calcs
+  var totalStdPmt=0,totalOvpPmt=0,totalStdInt=0,totalOvpInt=0,totalSaved=0;
+  var minMsStd=9999,minMsOvp=9999;
+  accs.forEach(function(a){var c=mortCalcSingle(a);totalStdPmt+=c.pmt;totalOvpPmt+=c.pmt+c.over;totalStdInt+=c.stdInt;totalOvpInt+=c.ovpInt;totalSaved+=c.saved;if(c.std.mo<minMsStd)minMsStd=c.std.mo;if(c.ovp.mo<minMsOvp)minMsOvp=c.ovp.mo;});
+  var ms=minMsStd-minMsOvp;
+  return{pmt:totalStdPmt,bal:totalBal,yr:maxTerm,rate:blendedRate,over:totalOver,
+    std:{ti:totalStdInt,mo:minMsStd},ovp:{ti:totalOvpInt,mo:minMsOvp},
+    saved:totalSaved,ms:Math.max(0,ms),ys:Math.floor(Math.max(0,ms)/12),mos:Math.max(0,ms)%12,stdInt:totalStdInt,ovpInt:totalOvpInt,
+    accounts:accs};
+}
+
+function loanCalcPmt(bal,rate,term){var r=rate/100/12;if(r===0)return bal/term;return bal*r*Math.pow(1+r,term)/(Math.pow(1+r,term)-1);}
+function loanMonths(bal,rate,mthly){if(!bal||bal<=0)return 0;var r=rate/100/12;if(r===0)return mthly>0?Math.ceil(bal/mthly):999;if(mthly<=bal*r)return 999;return Math.ceil(-Math.log(1-(bal*r/mthly))/Math.log(1+r));}
+function loanInt(bal,rate,mthly){if(!bal||bal<=0)return 0;var mo=loanMonths(bal,rate,mthly);if(mo>=999)return 999999;return Math.max(0,mthly*mo-bal);}
+function loanCurrentBalance(orig,rate,mo,startStr,term,payDay){
+  if(!orig||!startStr)return orig;
+  var parts=startStr.split('-');if(parts.length<2)return orig;
+  var sy=parseInt(parts[0]),sm=parseInt(parts[1])-1,pd=parseInt(payDay)||1;
+  var now2=new Date(),count=0,d=new Date(sy,sm,pd);d.setMonth(d.getMonth()+1);
+  while(count<term){if(d>now2)break;count++;d.setMonth(d.getMonth()+1);}
+  count=Math.min(count,term);
+  var r=rate/100/12,bal=orig;
+  for(var i=0;i<count;i++){var ic=bal*r,pr=Math.min(mo-ic,bal);if(pr<=0)break;bal-=pr;if(bal<0.01){bal=0;break;}}
+  return Math.max(0,Math.round(bal*100)/100);
+}
+function loanPaymentsMade(startStr,term,payDay){
+  if(!startStr)return 0;var parts=startStr.split('-');if(parts.length<2)return 0;
+  var sy=parseInt(parts[0]),sm=parseInt(parts[1])-1,pd=parseInt(payDay)||1;
+  var now2=new Date(),count=0,d=new Date(sy,sm,pd);d.setMonth(d.getMonth()+1);
+  while(count<term){if(d>now2)break;count++;d.setMonth(d.getMonth()+1);}
+  return Math.min(count,term);
+}
+function nextPaymentDate(startStr,term,payDay){
+  if(!startStr)return '--';var parts=startStr.split('-');if(parts.length<2)return '--';
+  var sy=parseInt(parts[0]),sm=parseInt(parts[1])-1,pd=parseInt(payDay)||1;
+  var now2=new Date(),count=0,d=new Date(sy,sm,pd);d.setMonth(d.getMonth()+1);
+  while(count<term){if(d>now2)break;count++;d.setMonth(d.getMonth()+1);}
+  if(count>=term)return 'Complete';
+  var sfx=pd===1?'st':pd===2?'nd':pd===3?'rd':'th';
+  return MONTHS[d.getMonth()]+' '+d.getFullYear()+' ('+pd+sfx+')';
+}
+function ccMonths(bal,apr,mo){if(!bal||bal<=0)return 0;var r=apr/100/12;if(r===0)return mo>0?Math.ceil(bal/mo):999;if(mo<=bal*r)return 999;return Math.ceil(-Math.log(1-(bal*r/mo))/Math.log(1+r));}
+function ccInt(bal,apr,mo){if(!bal||bal<=0)return 0;var m=ccMonths(bal,apr,mo);if(m>=999)return 999999;return Math.max(0,mo*m-bal);}
+function ccCurrentBalance(card){
+  if(card.payFull)return parseFloat(card.balance)||0;
+  if(!card.startDate)return parseFloat(card.balance)||0;
+  var origBal=parseFloat(card.origBalance||card.balance)||0;
+  var apr=parseFloat(card.apr)||0;
+  var mo=parseFloat(card.monthly)||0;
+  var r=apr/100/12;
+  var parts=card.startDate.split('-');if(parts.length<2)return origBal;
+  var sy=parseInt(parts[0]),sm=parseInt(parts[1])-1;
+  var pd=parseInt(card.dueDay)||1;
+  var now2=new Date(),count=0,d=new Date(sy,sm,pd);
+  d.setMonth(d.getMonth()+1);
+  while(count<600){if(d>now2)break;count++;d.setMonth(d.getMonth()+1);}
+  var bal=origBal;
+  for(var i=0;i<count;i++){
+    bal=Math.max(0,bal-mo);
+    bal=bal+(bal*r);
+    if(bal<0.01){bal=0;break;}
+  }
+  return Math.max(0,Math.round(bal*100)/100);
+}
+function clearDate(months){var d=new Date();d.setMonth(d.getMonth()+Math.round(months));return MONTHS[d.getMonth()]+' '+d.getFullYear();}
+function totalDebtMonthly(){return S.creditCards.reduce(function(s,c){return s+(parseFloat(c.monthly)||0);},0)+S.loans.reduce(function(s,l){return s+(parseFloat(l.monthly)||0);},0);}
+function holdingStats(){var mv=0,cb=0,gain=0,hasCost=false;S.holdings.forEach(function(h){var sh=parseFloat(h.shares)||0,pr=parseFloat(h.price)||0,co=parseFloat(h.cost)||0;mv+=sh*pr;if(co>0){cb+=sh*co;gain+=(sh*pr-sh*co);hasCost=true;}});return{mv:mv,cb:cb,gain:gain,hasCost:hasCost};}
+
+function doSave(){
+  // mortgageAccounts saved live via updMortAccount - sync mortgageInputs from first account for compatibility
+  if(S.mortgageAccounts&&S.mortgageAccounts.length>0){
+    S.mortgageInputs={balance:S.mortgageAccounts[0].balance,term:S.mortgageAccounts[0].term,rate:S.mortgageAccounts[0].rate,over:S.mortgageAccounts[0].over};
+  }
+  syncMortgageOverpayment();persist();showToast('Saved');
+}
+function showToast(msg){var t=document.getElementById('toast');t.textContent=msg||'Saved';t.style.opacity='1';setTimeout(function(){t.style.opacity='0';},2000);}
+function confirmReset(){document.getElementById('confirmBg').classList.add('open');}
+function closeConfirm(){document.getElementById('confirmBg').classList.remove('open');}
+function doReset(){
+  S=JSON.parse(JSON.stringify(DEFAULT));period='monthly';
+  document.querySelectorAll('.period-btn').forEach(function(b,i){b.classList.toggle('active',i===0);});
+  // mortgageAccounts reset via DEFAULT
+  closeConfirm();persist();update();
+}
+
+function renderIncome(){
+  var el=document.getElementById('income-cats');if(!el)return;el.innerHTML='';var l=lbl();
+  S.incomeCategories.forEach(function(cat){
+    var ct=cat.items.reduce(function(s,i){return s+(parseFloat(i.amount)||0);},0);
+    var grp=document.createElement('div');grp.className='grp';
+    var hdr=document.createElement('div');hdr.className='grp-header';
+    var hdrLeft=document.createElement('div');hdrLeft.className='grp-label';hdrLeft.textContent=cat.name;
+    var hdrRight=document.createElement('div');hdrRight.style.cssText='display:flex;align-items:center;gap:6px;';
+    var hdrTot=document.createElement('div');hdrTot.className='grp-total';hdrTot.textContent='£'+fmtP(toD(ct))+'/'+l;
+    var catBtns=document.createElement('div');catBtns.className='reorder-btns';
+    var cbu=document.createElement('button');cbu.className='reorder-btn';cbu.textContent='▲';
+    cbu.onclick=(function(cid){return function(){moveCatUp('income',cid);};})(cat.id);
+    var cbd=document.createElement('button');cbd.className='reorder-btn';cbd.textContent='▼';
+    cbd.onclick=(function(cid){return function(){moveCatDown('income',cid);};})(cat.id);
+    catBtns.appendChild(cbu);catBtns.appendChild(cbd);
+    hdrRight.appendChild(hdrTot);hdrRight.appendChild(catBtns);
+    hdr.appendChild(hdrLeft);hdr.appendChild(hdrRight);
+    grp.appendChild(hdr);
+    var card=document.createElement('div');card.className='card';
+    cat.items.forEach(function(item,itemIdx){
+      var row=document.createElement('div');row.className='row';
+      var lbl2=document.createElement('div');lbl2.className='row-label';
+      var nf=document.createElement('input');nf.className='name-field';nf.type='text';nf.value=item.name;
+      nf.onchange=function(){updItemName('income',cat.id,item.id,this.value);};
+      lbl2.appendChild(nf);
+      var subf=document.createElement('input');subf.type='text';subf.value=item.sub||'';subf.placeholder='Add note...';
+      subf.style.cssText='font-size:10px;color:var(--dim);background:none;border:none;outline:none;width:100%;margin-top:2px;font-family:DM Sans,sans-serif;border-bottom:1px solid transparent;';
+      subf.onfocus=function(){this.style.borderBottomColor='var(--gold)';};
+      subf.onblur=function(){this.style.borderBottomColor='transparent';};
+      subf.onchange=(function(cid,iid){return function(){updItemSub('income',cid,iid,this.value);};})(cat.id,item.id);
+      lbl2.appendChild(subf);
+            row.appendChild(lbl2);
+      var fw=document.createElement('div');fw.className='field-wrap';
+      fw.innerHTML='<span class="fpfx">£</span>';
+      var inp=document.createElement('input');inp.className='field';inp.type='number';inp.value=item.amount;inp.inputMode='decimal';
+      inp.onchange=function(){updItem('income',cat.id,item.id,this.value);};
+      fw.appendChild(inp);
+      fw.innerHTML+=('<span class="fsfx">/mo</span>');
+      var pfx=document.createElement('span');pfx.className='fpfx';pfx.textContent='£';
+      fw=document.createElement('div');fw.className='field-wrap';
+      var pfxs=document.createElement('span');pfxs.className='fpfx';pfxs.textContent='£';
+      fw.appendChild(pfxs);
+      var inp2=document.createElement('input');inp2.className='field';inp2.type='number';inp2.value=item.amount;inp2.inputMode='decimal';
+      inp2.onchange=(function(cid,iid){return function(){updItem('income',cid,iid,this.value);};})(cat.id,item.id);
+      fw.appendChild(inp2);
+      var sfx=document.createElement('span');sfx.className='fsfx';sfx.textContent='/mo';fw.appendChild(sfx);
+      row.appendChild(fw);
+      var ibns=document.createElement('div');ibns.className='reorder-btns';
+      var ibu=document.createElement('button');ibu.className='reorder-btn';ibu.textContent='▲';
+      ibu.onclick=(function(cid,iid){return function(){moveItemUp('income',cid,iid);};})(cat.id,item.id);
+      var ibd=document.createElement('button');ibd.className='reorder-btn';ibd.textContent='▼';
+      ibd.onclick=(function(cid,iid){return function(){moveItemDown('income',cid,iid);};})(cat.id,item.id);
+      ibns.appendChild(ibu);ibns.appendChild(ibd);row.appendChild(ibns);
+      var db=document.createElement('button');db.className='del-btn';db.innerHTML='&#215;';
+      db.onclick=(function(cid,iid){return function(){delItem('income',cid,iid);};})(cat.id,item.id);
+      row.appendChild(db);
+      card.appendChild(row);
+    });
+    var addBtn=document.createElement('button');addBtn.className='add-btn';addBtn.innerHTML='<span class="add-icon">+</span>Add item';
+    addBtn.onclick=(function(cid){return function(){openModal('income-item',cid);};})(cat.id);
+    card.appendChild(addBtn);
+    var delBtn=document.createElement('button');delBtn.className='add-btn';delBtn.style.cssText='color:var(--red);font-size:11px;padding-top:0';
+    delBtn.innerHTML='<span class="add-icon" style="background:var(--red-l);color:var(--red)">-</span>Remove category';
+    delBtn.onclick=(function(cid){return function(){delCat('income',cid);};})(cat.id);
+    card.appendChild(delBtn);
+    grp.appendChild(card);
+    el.appendChild(grp);
+  });
+  var t=document.getElementById('total-inc');if(t)t.textContent='£'+fmtP(toD(totalInc()))+'/'+l;
+}
+
+function renderSpending(){
+  var el=document.getElementById('spending-cats');if(!el)return;el.innerHTML='';var l=lbl();
+  S.spendingCategories.forEach(function(cat){
+    var ct=cat.items.reduce(function(s,i){return s+(parseFloat(i.amount)||0);},0);
+    var isDC=(cat.id===9999),isSav=(cat.id===50);
+    var grp=document.createElement('div');grp.className='grp';
+    var catLabel=isSav?'Savings and Investments':isDC?'Debt Commitments (auto)':cat.name;
+    var hdr=document.createElement('div');hdr.className='grp-header';
+    var hdrSub='';
+    if(isSav){
+      var surpNow=surplus();
+      var savNow=totalSavings();
+      hdrSub=surpNow>0?' · '+Math.round(savNow/surpNow*100)+'% of surplus income':'';
+    }
+    var hdrLL=document.createElement('div');hdrLL.style.cssText='color:'+(cat.color||'var(--dimmer)')+';font-family:DM Mono,monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;';
+    hdrLL.textContent=catLabel;
+    if(hdrSub){var hdrSS=document.createElement('span');hdrSS.style.cssText='font-weight:400;font-size:8px;color:var(--dim);margin-left:4px;text-transform:none;letter-spacing:0;';hdrSS.textContent=hdrSub;hdrLL.appendChild(hdrSS);}
+    var hdrRR=document.createElement('div');hdrRR.style.cssText='display:flex;align-items:center;gap:6px;';
+    var hdrTT=document.createElement('div');hdrTT.className='grp-total';hdrTT.textContent='£'+fmtP(toD(ct))+'/'+l;
+    hdrRR.appendChild(hdrTT);
+    if(!isDC&&!isSav){
+      var scBtns=document.createElement('div');scBtns.className='reorder-btns';
+      var scbu=document.createElement('button');scbu.className='reorder-btn';scbu.textContent='▲';
+      scbu.onclick=(function(cid){return function(){moveCatUp('spending',cid);};})(cat.id);
+      var scbd=document.createElement('button');scbd.className='reorder-btn';scbd.textContent='▼';
+      scbd.onclick=(function(cid){return function(){moveCatDown('spending',cid);};})(cat.id);
+      scBtns.appendChild(scbu);scBtns.appendChild(scbd);hdrRR.appendChild(scBtns);
+    }
+    hdr.appendChild(hdrLL);hdr.appendChild(hdrRR);
+    grp.appendChild(hdr);
+    var card=document.createElement('div');card.className='card';card.style.marginTop='6px';
+    cat.items.forEach(function(item){
+      var isAuto=!!(item.autoSync||isDC);
+      var dispAmt=isDC?Math.round(parseFloat(item.amount)||0):(parseFloat(item.amount)||0);
+      var row=document.createElement('div');row.className='row';
+      var lbl2=document.createElement('div');lbl2.className='row-label';
+      var nf=document.createElement('input');nf.className='name-field';nf.type='text';nf.value=item.name;
+      if(item.autoSync||isDC){nf.readOnly=true;nf.style.opacity='0.6';}
+      nf.onchange=(function(cid,iid){return function(){updItemName('spending',cid,iid,this.value);};})(cat.id,item.id);
+      lbl2.appendChild(nf);
+      var subf=document.createElement('input');subf.type='text';subf.value=item.sub||'';subf.placeholder='Add note...';
+      subf.style.cssText='font-size:10px;color:var(--dim);background:none;border:none;outline:none;width:100%;margin-top:2px;font-family:DM Sans,sans-serif;border-bottom:1px solid transparent;';
+      subf.onfocus=function(){this.style.borderBottomColor='var(--gold)';};
+      subf.onblur=function(){this.style.borderBottomColor='transparent';};
+      subf.onchange=(function(cid,iid){return function(){updItemSub('income',cid,iid,this.value);};})(cat.id,item.id);
+      lbl2.appendChild(subf);
+            row.appendChild(lbl2);
+      var fw=document.createElement('div');fw.className='field-wrap';
+      var pfxs=document.createElement('span');pfxs.className='fpfx';pfxs.textContent='£';fw.appendChild(pfxs);
+      var inp=document.createElement('input');inp.className='field';inp.type='number';inp.value=dispAmt;inp.inputMode='decimal';
+      if(item.autoSync||isDC){inp.readOnly=true;inp.style.opacity='0.6';}
+      inp.onchange=(function(cid,iid){return function(){updItem('spending',cid,iid,this.value);};})(cat.id,item.id);
+      fw.appendChild(inp);
+      var sfx=document.createElement('span');sfx.className='fsfx';sfx.textContent='/mo';fw.appendChild(sfx);
+      row.appendChild(fw);
+      if(!item.autoSync&&!isDC){
+        var sibns=document.createElement('div');sibns.className='reorder-btns';
+        var sibu=document.createElement('button');sibu.className='reorder-btn';sibu.textContent='▲';
+        sibu.onclick=(function(cid,iid){return function(){moveItemUp('spending',cid,iid);};})(cat.id,item.id);
+        var sibd=document.createElement('button');sibd.className='reorder-btn';sibd.textContent='▼';
+        sibd.onclick=(function(cid,iid){return function(){moveItemDown('spending',cid,iid);};})(cat.id,item.id);
+        sibns.appendChild(sibu);sibns.appendChild(sibd);row.appendChild(sibns);
+      }
+      if(item.autoSync){var sp=document.createElement('span');sp.style.cssText='width:24px;flex-shrink:0';row.appendChild(sp);}
+      else if(!isDC){var db=document.createElement('button');db.className='del-btn';db.innerHTML='&#215;';db.onclick=(function(cid,iid){return function(){delItem('spending',cid,iid);};})(cat.id,item.id);row.appendChild(db);}
+      else{var sp2=document.createElement('span');sp2.style.cssText='width:24px;flex-shrink:0';row.appendChild(sp2);}
+      card.appendChild(row);
+    });
+    if(!isDC){
+      var addBtn=document.createElement('button');addBtn.className='add-btn';addBtn.innerHTML='<span class="add-icon">+</span>Add item';
+      addBtn.onclick=(function(cid){return function(){openModal('spending-item',cid);};})(cat.id);
+      card.appendChild(addBtn);
+    }
+    if(!isDC&&!isSav){
+      var delBtn=document.createElement('button');delBtn.className='add-btn';delBtn.style.cssText='color:var(--red);font-size:11px;padding-top:0';
+      delBtn.innerHTML='<span class="add-icon" style="background:var(--red-l);color:var(--red)">-</span>Remove category';
+      delBtn.onclick=(function(cid){return function(){delCat('spending',cid);};})(cat.id);
+      card.appendChild(delBtn);
+    }
+    grp.appendChild(card);
+    el.appendChild(grp);
+  });
+  var t=document.getElementById('total-exp');if(t)t.textContent='£'+fmtP(toD(totalExp()))+'/'+l;
+}
+
+function renderPlan(){
+  // Sync investment strategy names from savings items
+  var syncCat=S.spendingCategories.find(function(c){return c.id===50;});
+  if(syncCat&&syncCat.items.length>0){
+    syncCat.items.forEach(function(item,i){
+      if(item.invRef){
+        var inv=S.investments.find(function(x){return x.id===item.invRef;});
+        if(inv)inv.name=item.name;
+      } else if(i<S.investments.length){
+        // No invRef - try to link by position and sync name
+        var alreadyLinked=syncCat.items.some(function(other){return other.invRef===S.investments[i].id;});
+        if(!alreadyLinked){item.invRef=S.investments[i].id;S.investments[i].name=item.name;}
+      }
+    });
+  }
+  var surp=surplus(),l=lbl(),savTotal=totalSavings(),inc=totalInc(),resid=residual();
+  var h=document.getElementById('heroAmt');if(!h)return;
+  h.textContent='£'+fmt(toD(resid));
+  document.getElementById('dcVal').textContent='£'+fmt(toD(resid));
+  document.getElementById('dcLbl').textContent='per '+l;
+  document.getElementById('planLabel').textContent='Residual after savings';
+  document.getElementById('heroSub').textContent='Surplus before savings: £'+fmtP(toD(surp))+' | Saving: £'+fmtP(toD(savTotal));
+  var sb=document.getElementById('statusBar');
+  if(resid>=0){sb.className='status-bar ok';document.getElementById('sbLabel').className='sb-label ok';document.getElementById('sbAmt').className='sb-amt ok';document.getElementById('sbLabel').textContent='Residual';document.getElementById('sbAmt').textContent='£'+fmt(toD(surp));}
+  else{sb.className='status-bar warn';document.getElementById('sbLabel').className='sb-label warn';document.getElementById('sbAmt').className='sb-amt warn';document.getElementById('sbLabel').textContent='Overspent';document.getElementById('sbAmt').textContent='£'+fmt(toD(surp));}
+  var sal=document.getElementById('savingsAllocList');
+  if(sal){
+    sal.innerHTML='';
+    var sc=S.spendingCategories.find(function(c){return c.id===50;});
+    if(sc&&sc.items.length){
+      var surpForPct=surp>0?surp:1;
+      sc.items.forEach(function(item){
+        var v=parseFloat(item.amount)||0;
+        var pctOfSurp=surp>0?(v/surp*100):0;
+        var pctOfSav=savTotal>0?(v/savTotal*100):0;
+        var d=document.createElement('div');d.className='alloc-item';
+        d.innerHTML='<div class="alloc-dot" style="background:var(--green)"></div>'+
+          '<div class="alloc-info"><div class="alloc-name">'+item.name+'</div>'+
+          '<div class="alloc-desc">'+pctOfSurp.toFixed(0)+'% of surplus &middot; '+pctOfSav.toFixed(0)+'% of savings</div></div>'+
+          '<div class="alloc-right"><div class="alloc-mo">£'+fmtP(toD(v))+'/'+l+'</div><div class="alloc-yr">£'+fmtP(v*12)+'/yr</div></div>';
+        sal.appendChild(d);
+      });
+    } else {
+      sal.innerHTML='<div style="text-align:center;padding:12px;color:var(--dimmer);font-size:12px">Add items to Savings and Investments in Spending tab</div>';
+    }
+    drawDonut();
+  }
+  var iel=document.getElementById('investEditList');
+  if(iel){
+    iel.innerHTML='';
+    // Suggested allocation of residual income (illustration only)
+    // Uses savings item names directly - proportional to investment strategy weights
+    var resid2=residual();
+    var enabledInvs=S.investments.filter(function(i){return i.enabled;});
+    var savCatForSugg=S.spendingCategories.find(function(c){return c.id===50;});
+    if(resid2>0&&enabledInvs.length>0){
+      var weights=enabledInvs.map(function(inv){
+        return inv.mode==='fixed'?(parseFloat(inv.amount)||0):(parseFloat(inv.pct)||0);
+      });
+      var totalWeight=weights.reduce(function(s,w){return s+w;},0)||1;
+      var suggestions=enabledInvs.map(function(inv,i){
+        return{inv:inv, amount:Math.round(resid2*(weights[i]/totalWeight))};
+      }).filter(function(s){return s.amount>0;});
+      var sugTotal=suggestions.reduce(function(s,x){return s+x.amount;},0);
+      if(suggestions.length>0&&sugTotal!==Math.round(resid2)){
+        suggestions[0].amount+=Math.round(resid2)-sugTotal;
+      }
+      var suggestBox=document.createElement('div');
+      suggestBox.style.cssText='background:rgba(200,151,58,0.08);border:1px solid rgba(200,151,58,0.3);border-radius:12px;margin:0 12px 8px;padding:12px 13px;';
+      var sugTitle=document.createElement('div');sugTitle.style.cssText='font-size:12px;font-weight:600;color:var(--gold);margin-bottom:2px;';
+      sugTitle.textContent='Suggested split of \u00a3'+fmtP(resid2)+'/mo residual';
+      suggestBox.appendChild(sugTitle);
+      var sugSub=document.createElement('div');sugSub.style.cssText='font-size:10px;color:var(--dim);margin-bottom:8px;';
+      sugSub.textContent='Proportional to your strategy weights. Applying will top up existing savings amounts.';
+      suggestBox.appendChild(sugSub);
+      suggestions.forEach(function(sg,sgIdx){
+        var row=document.createElement('div');row.style.cssText='display:flex;justify-content:space-between;align-items:center;font-size:12px;padding:5px 0;border-bottom:1px solid var(--rule);';
+        var nm=document.createElement('span');nm.style.color='var(--dim)';
+        // Use savings item name directly by index (savings items correspond to suggestions)
+        var displayName=sg.inv.name;
+        if(savCatForSugg&&savCatForSugg.items[sgIdx]){
+          displayName=savCatForSugg.items[sgIdx].name;
+        }
+        nm.textContent=displayName;
+        var right=document.createElement('div');right.style.cssText='text-align:right;';
+        var amt=document.createElement('div');amt.style.cssText='font-family:DM Mono,monospace;color:var(--gold);font-size:13px;';amt.textContent='+\u00a3'+fmtP(sg.amount)+'/mo';
+        var curItem=savCatForSugg?savCatForSugg.items[sgIdx]:null;
+        if(curItem){
+          var cur=document.createElement('div');cur.style.cssText='font-size:10px;color:var(--dimmer);';
+          cur.textContent='currently \u00a3'+fmtP(parseFloat(curItem.amount)||0)+' \u2192 \u00a3'+fmtP((parseFloat(curItem.amount)||0)+sg.amount);
+          right.appendChild(amt);right.appendChild(cur);
+        } else {
+          right.appendChild(amt);
+        }
+        row.appendChild(nm);row.appendChild(right);suggestBox.appendChild(row);
+      });
+      var applyAllBtn=document.createElement('button');
+      applyAllBtn.style.cssText='margin-top:10px;width:100%;padding:9px;background:var(--green);border:none;border-radius:8px;color:white;font-size:12px;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif;';
+      applyAllBtn.textContent='Apply \u2014 top up Savings and Investments';
+      applyAllBtn.onclick=function(){applyResidualToSavings(suggestions);};
+      suggestBox.appendChild(applyAllBtn);
+      iel.appendChild(suggestBox);
+    } else if(resid2<=0){
+      var noResid=document.createElement('div');noResid.className='warn-box';noResid.style.margin='0 12px 8px';
+      noResid.innerHTML='<p>No residual to allocate. Your savings targets exceed your surplus. Reduce a savings item or increase income.</p>';
+      iel.appendChild(noResid);
+    }
+    // Strategy rows - editable, deletable
+    S.investments.forEach(function(inv){
+      var div=document.createElement('div');div.className='inv-edit-row';
+      // Header
+      var hdr=document.createElement('div');hdr.className='inv-edit-header';
+      var dot=document.createElement('div');dot.className='alloc-dot';dot.style.background=inv.color;hdr.appendChild(dot);
+      var tog=document.createElement('label');tog.className='toggle';
+      var cb=document.createElement('input');cb.type='checkbox';cb.checked=inv.enabled;
+      cb.onchange=(function(id){return function(){toggleInv(id,this.checked);};})(inv.id);
+      var tr=document.createElement('div');tr.className='tog-track';
+      var th=document.createElement('div');th.className='tog-thumb';
+      tog.appendChild(cb);tog.appendChild(tr);tog.appendChild(th);hdr.appendChild(tog);
+      var info=document.createElement('div');info.style.cssText='flex:1;font-size:13px;font-weight:500;';
+      var sc5=S.spendingCategories.find(function(c){return c.id===50;});
+      var linkedItem2=null;
+      if(sc5){
+        linkedItem2=sc5.items.find(function(it){return it.invRef===inv.id;});
+        if(!linkedItem2){
+          var invW=inv.name.toLowerCase().replace(/[^a-z0-9 ]/g,'').split(' ').filter(function(w){return w.length>2;});
+          var best2=null,bs2=0;
+          sc5.items.forEach(function(it){
+            var iW=it.name.toLowerCase().replace(/[^a-z0-9 ]/g,'').split(' ').filter(function(w){return w.length>2;});
+            var sc2=0;invW.forEach(function(w){if(iW.indexOf(w)>=0)sc2++;});iW.forEach(function(w){if(invW.indexOf(w)>=0)sc2++;});
+            if(sc2>bs2){bs2=sc2;best2=it;}
+          });
+          if(best2&&bs2>0)linkedItem2=best2;
+        }
+      }
+      info.textContent=linkedItem2?linkedItem2.name:inv.name;
+      var desc=document.createElement('div');desc.className='row-sub';desc.textContent=inv.desc;
+      info.appendChild(desc);hdr.appendChild(info);
+      var applyBtn=document.createElement('button');applyBtn.className='apply-btn';applyBtn.textContent='Apply';
+      applyBtn.onclick=(function(id){return function(){applyInvestmentToSavings(id);};})(inv.id);
+      hdr.appendChild(applyBtn);
+      var delBtn=document.createElement('button');delBtn.className='del-btn';delBtn.style.marginLeft='6px';delBtn.innerHTML='&#215;';
+      delBtn.onclick=(function(id){return function(){delInv(id);};})(inv.id);
+      hdr.appendChild(delBtn);
+      div.appendChild(hdr);
+      // Inputs
+      var inputs=document.createElement('div');inputs.className='inv-edit-inputs';
+      // Mode cell
+      var mc=document.createElement('div');mc.className='inv-edit-cell';
+      var ml=document.createElement('div');ml.className='inv-edit-label';ml.textContent='Mode';mc.appendChild(ml);
+      var mw=document.createElement('div');mw.className='inv-edit-wrap';
+      var sel=document.createElement('select');sel.className='inv-edit-input';
+      var opt1=document.createElement('option');opt1.value='fixed';opt1.textContent='Fixed/mo';if(inv.mode==='fixed')opt1.selected=true;sel.appendChild(opt1);
+      var opt2=document.createElement('option');opt2.value='pct';opt2.textContent='% residual';if(inv.mode==='pct')opt2.selected=true;sel.appendChild(opt2);
+      sel.onchange=(function(id){return function(){updInvMode(id,this.value);};})(inv.id);
+      mw.appendChild(sel);mc.appendChild(mw);inputs.appendChild(mc);
+      // Amount cell
+      var ac=document.createElement('div');ac.className='inv-edit-cell';
+      var al=document.createElement('div');al.className='inv-edit-label';al.textContent=inv.mode==='fixed'?'Amount':'% residual';ac.appendChild(al);
+      var aw=document.createElement('div');aw.className='inv-edit-wrap';
+      if(inv.mode==='fixed'){var pfx=document.createElement('span');pfx.className='inv-edit-pfx';pfx.textContent='£';aw.appendChild(pfx);}
+      var ainp=document.createElement('input');ainp.className='inv-edit-input';ainp.type='number';ainp.value=inv.mode==='fixed'?inv.amount:inv.pct;ainp.inputMode='decimal';
+      ainp.onchange=(function(id){return function(){updInvAmt(id,this.value);};})(inv.id);
+      aw.appendChild(ainp);
+      var sfx2=document.createElement('span');sfx2.className='inv-edit-sfx';sfx2.textContent=inv.mode==='fixed'?'/mo':'%';aw.appendChild(sfx2);
+      ac.appendChild(aw);inputs.appendChild(ac);
+      // Applied to savings cell
+      var sc2=document.createElement('div');sc2.className='inv-edit-cell';
+      var sl2=document.createElement('div');sl2.className='inv-edit-label';sl2.textContent='In savings';sc2.appendChild(sl2);
+      var savCat=S.spendingCategories.find(function(c){return c.id===50;});
+      var inSavings=savCat?savCat.items.find(function(i){return i.invRef===inv.id;}):null;
+      var sv=document.createElement('div');sv.style.cssText='padding:5px 2px;font-family:DM Mono,monospace;font-size:11px;';
+      sv.style.color=inSavings?'#5ec9a0':'var(--dimmer)';
+      sv.textContent=inSavings?'£'+fmtP(inSavings.amount)+'/mo':'Not applied';
+      sc2.appendChild(sv);inputs.appendChild(sc2);
+      div.appendChild(inputs);
+      iel.appendChild(div);
+    });
+  }
+  renderStrategyCommentary(savTotal);
+  renderTaxRebates();
+  renderRecs();
+}
+
+function renderStrategyCommentary(savTotal){
+  var el=document.getElementById('strategyCommentary');if(!el)return;
+  var inc=totalInc(),sr=savingRate(),surp=surplus();
+  var comments=[];
+  if(sr<10)comments.push({warn:true,text:'Your saving rate of '+sr.toFixed(1)+'% is below 10%. Consider reviewing discretionary spending to increase your Savings and Investments.'});
+  else if(sr>=20)comments.push({warn:false,text:'Your saving rate of '+sr.toFixed(1)+'% exceeds the 20% benchmark. Well positioned for long-term wealth building.'});
+  else comments.push({warn:false,text:'Your saving rate of '+sr.toFixed(1)+'% is approaching the 20% benchmark. Small increases to ISA or pension contributions would close the gap.'});
+  if(surp>500)comments.push({warn:false,text:'You have £'+Math.round(surp)+'/mo residual after savings. Consider adding this to a category in Savings and Investments rather than leaving it unallocated.'});
+  else if(surp<0)comments.push({warn:true,text:'Total spending including savings exceeds income by £'+Math.abs(Math.round(surp))+'/mo. Review your Savings and Investments to ensure allocations are achievable.'});
+  var partnerInSav=(S.spendingCategories.find(function(c){return c.id===50;})||{items:[]}).items.some(function(i){return i.name.toLowerCase().indexOf('partner')>=0&&(i.name.toLowerCase().indexOf('sipp')>=0||i.name.toLowerCase().indexOf('pension')>=0);});
+  if(!partnerInSav)comments.push({warn:true,text:'Partner pension is not in your Savings and Investments. Opening a SIPP for your partner with 20% tax relief would improve long-term household provision and your saving rate.'});
+  el.innerHTML='';
+  comments.forEach(function(c){var box=document.createElement('div');box.className=c.warn?'warn-box':'info-box';box.innerHTML='<p>'+c.text+'</p>';el.appendChild(box);});
+}
+
+function renderTaxRebates(){
+  var el=document.getElementById('taxRebates');if(!el)return;el.innerHTML='';
+  var rebates=[];
+  S.spendingCategories.forEach(function(cat){
+    cat.items.forEach(function(item){
+      var n=(item.name||'').toLowerCase(),s=(item.sub||'').toLowerCase(),both=n+' '+s,amt=parseFloat(item.amount)||0;
+      if(amt<=0)return;
+      if(both.indexOf('second office')>=0||both.indexOf('temporary workplace')>=0||(both.indexOf('second')>=0&&(both.indexOf('travel')>=0||both.indexOf('office')>=0))){
+        var annual=amt*12,relief=Math.round(annual*0.4);
+        rebates.push({priority:'high',title:'Second office travel relief: £'+fmtP(relief)+' potential/yr',body:'Your "'+item.name+'" expense of £'+amt+'/mo (£'+fmtP(annual)+'/yr) may qualify for 40% tax relief as a temporary workplace under HMRC rules. This could return £'+fmtP(Math.round(amt*0.4))+'/mo (£'+fmtP(relief)+'/yr) via self-assessment.',action:'Confirm temporary workplace status with employer or tax accountant'});
+      }
+      if(both.indexOf('wfh')>=0||both.indexOf('work from home')>=0||both.indexOf('home office')>=0){
+        rebates.push({priority:'medium',title:'Working from home allowance',body:'HMRC allows £6/week (£312/yr) WFH flat rate or actual additional costs. Check your tax code 1288L already reflects WFH relief - if not, claim via self-assessment.',action:'Check HMRC personal tax account and compare against your tax code'});
+      }
+      if((both.indexOf('subscription')>=0||both.indexOf('professional body')>=0)&&both.indexOf('golf')<0&&both.indexOf('gym')<0){
+        rebates.push({priority:'low',title:'Professional subscription: '+item.name,body:'Professional body subscriptions relevant to your employment may qualify for full income tax relief. At 40% that would return £'+Math.round(amt*12*0.4)+'/yr.',action:'Check HMRC approved professional bodies list and claim via self-assessment'});
+      }
+    });
+  });
+  if(!rebates.length){el.innerHTML='<div class="info-box"><p><strong>No rebates detected yet</strong><br>Add descriptive notes to expense items (e.g. "temporary workplace", "second office travel", "WFH") and potential rebates will appear here automatically.</p></div>';return;}
+  rebates.forEach(function(r){
+    var box=document.createElement('div');box.className='rec-card';
+    box.innerHTML='<div class="rec-pri '+r.priority+'">'+r.priority.toUpperCase()+'</div><div class="rec-title">'+r.title+'</div><div class="rec-body">'+r.body+'</div><div class="rec-impact">Action: '+r.action+'</div>';
+    el.appendChild(box);
+  });
+}
+
+function renderPortfolio(){
+  var accTotal=0,ir=document.getElementById('inv-acc-rows');
+  if(ir){ir.innerHTML='';S.invAccounts.forEach(function(acc,idx){var r=document.createElement('div');r.className='row';r.innerHTML='<div class="row-label"><input class="name-field" type="text" value="'+acc.name+'" onchange="updInvAccName('+idx+',this.value)"></div><div class="field-wrap"><span class="fpfx">£</span><input class="field" type="number" value="'+acc.value+'" inputmode="decimal" onchange="updInvAcc('+idx+',this.value)"></div><button class="del-btn" onclick="delInvAcc('+idx+')">&#215;</button>';ir.appendChild(r);accTotal+=parseFloat(acc.value)||0;});}
+  var hs=holdingStats(),list=document.getElementById('holdingsList');
+  if(list){
+    list.innerHTML='';
+    S.holdings.forEach(function(h,idx){
+      var sh=parseFloat(h.shares)||0,pr=parseFloat(h.price)||0,co=parseFloat(h.cost)||0,mv=sh*pr,cb=sh*co,gl=co>0?(mv-cb):null;
+      var card=document.createElement('div');card.className='holding-card';
+      var hdr2=document.createElement('div');hdr2.className='holding-header';
+      var inf2=document.createElement('div');
+      var tkr=document.createElement('div');tkr.className='holding-ticker';tkr.textContent=h.ticker;inf2.appendChild(tkr);
+      var hnm=document.createElement('div');hnm.className='holding-name';
+      var hnf=document.createElement('input');hnf.className='name-field';hnf.style.cssText='font-size:11px;color:var(--dim)';hnf.type='text';hnf.value=h.name;
+      hnf.onchange=(function(i){return function(){updHoldingName(i,this.value);};})(idx);
+      hnm.appendChild(hnf);inf2.appendChild(hnm);hdr2.appendChild(inf2);
+      var vd=document.createElement('div');vd.style.cssText='margin-left:auto;text-align:right';
+      var ve=document.createElement('div');ve.className='holding-value';ve.textContent=mv>0?'£'+fmtP(mv):'--';vd.appendChild(ve);
+      var ge=document.createElement('div');ge.className='holding-gl';
+      if(gl!==null){ge.textContent=(gl>=0?'+':'-')+'£'+fmtP(Math.abs(Math.round(gl)))+' ('+(cb>0?((gl/cb)*100).toFixed(1):'0')+'%)';ge.classList.add(gl>=0?'pos':'neg');}
+      else{ge.textContent='Add cost basis';ge.style.color='var(--dimmer)';}
+      vd.appendChild(ge);hdr2.appendChild(vd);
+      var hdb=document.createElement('button');hdb.className='del-btn';hdb.style.marginLeft='8px';hdb.innerHTML='&#215;';
+      hdb.onclick=(function(i){return function(){delHolding(i);};})(idx);hdr2.appendChild(hdb);
+      card.appendChild(hdr2);
+      var ig=document.createElement('div');ig.className='holding-inputs';
+      [['Shares','shares',h.shares,''],['Price £','price',h.price,'0.00'],['Cost £/sh','cost',h.cost,'0.00']].forEach(function(f){
+        var hc=document.createElement('div');hc.className='hi-cell';
+        var hl=document.createElement('div');hl.className='hi-label';hl.textContent=f[0];hc.appendChild(hl);
+        var hi=document.createElement('input');hi.className='hi-input';hi.type='number';hi.value=f[2]||'';hi.placeholder=f[3];hi.inputMode='decimal';
+        hi.onchange=(function(i,fn){return function(){updHolding(i,fn,this.value);};})(idx,f[1]);
+        hc.appendChild(hi);ig.appendChild(hc);
+      });
+      card.appendChild(ig);list.appendChild(card);
+    });
+  }
+  var grand=accTotal+hs.mv,pt=document.getElementById('portTotal');if(pt)pt.textContent='£'+fmtP(grand);
+  var gl=document.getElementById('portGL');if(gl){if(hs.hasCost){var p=hs.cb>0?((hs.gain/hs.cb)*100).toFixed(1):'0';gl.textContent='Holdings gain vs cost: '+(hs.gain>=0?'+':'-')+'£'+fmtCur(hs.gain)+' ('+p+'%)';gl.className='port-gl '+(hs.gain>=0?'pos':'neg');}else{gl.textContent='Enter cost basis on holdings to see gain/loss';gl.className='port-gl';}}
+}
+
+function renderMortgage(){
+  if(!Array.isArray(S.mortgageAccounts)||!S.mortgageAccounts.length){
+    S.mortgageAccounts=[{id:1,name:'Main mortgage',balance:S.mortgageInputs.balance||220000,term:S.mortgageInputs.term||22,termYears:S.mortgageInputs.termYears||22,termMonths:S.mortgageInputs.termMonths||0,rate:S.mortgageInputs.rate||4.5,over:S.mortgageInputs.over||200}];
+  }
+  // Render each sub-account
+  var accEl=document.getElementById('mortAccounts');
+  if(accEl){
+    accEl.innerHTML='';
+    S.mortgageAccounts.forEach(function(acc,idx){
+      var grp=document.createElement('div');grp.className='grp';
+      var hdr=document.createElement('div');hdr.className='grp-header';
+      var hl=document.createElement('div');hl.className='grp-label';
+      var ni=document.createElement('input');ni.type='text';ni.value=acc.name;ni.style.cssText='background:none;border:none;outline:none;color:var(--text);font-family:DM Mono,monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;width:180px;';
+      ni.onchange=(function(i){return function(){updMortAccount(i,'name',this.value);};})(idx);
+      hl.appendChild(ni);
+      var hr2=document.createElement('div');hr2.style.cssText='display:flex;align-items:center;gap:6px;';
+      var mc=mortCalcSingle(acc);
+      var ht=document.createElement('div');ht.className='grp-total';ht.textContent='£'+fmtP(mc.pmt)+'/mo';
+      hr2.appendChild(ht);
+      if(S.mortgageAccounts.length>1){
+        var delbtn=document.createElement('button');delbtn.className='del-btn';delbtn.innerHTML='&#215;';
+        delbtn.onclick=(function(i){return function(){delMortAccount(i);};})(idx);
+        hr2.appendChild(delbtn);
+      }
+      hdr.appendChild(hl);hdr.appendChild(hr2);grp.appendChild(hdr);
+      var card=document.createElement('div');card.className='card';
+      // Fields
+      var fields=[
+        ['Outstanding balance','balance',acc.balance,'£',''],
+        ['Term remaining (years)','termYears',acc.termYears!=null?acc.termYears:(acc.term||22),'','yrs'],
+        ['Term remaining (months)','termMonths',acc.termMonths!=null?acc.termMonths:0,'','mo'],
+        ['Interest rate','rate',acc.rate,'','%'],
+        ['Monthly overpayment','over',acc.over,'£',''],
+        ['Payment day of month','paymentDay',acc.paymentDay||'','','']
+      ];
+      fields.forEach(function(f){
+        var row=document.createElement('div');row.className='row';
+        var lbl=document.createElement('div');lbl.className='row-label';lbl.textContent=f[0];
+        if(f[1]==='over'){var sub=document.createElement('div');sub.className='row-sub';sub.textContent='Auto-synced to Savings category';lbl.appendChild(sub);}
+        row.appendChild(lbl);
+        var fw=document.createElement('div');fw.className='field-wrap';
+        if(f[3]){var pfx=document.createElement('span');pfx.className='fpfx';pfx.textContent=f[3];fw.appendChild(pfx);}
+        var inp=document.createElement('input');inp.className='field';inp.type='number';inp.value=f[2];inp.inputMode='decimal';
+        if(f[1]==='rate')inp.step='0.1';
+        inp.onchange=(function(i,fn){return function(){updMortAccount(i,fn,this.value);};})(idx,f[1]);
+        if(f[1]==='paymentDay'){inp.min='1';inp.max='28';inp.placeholder='1-28';}
+        if(f[1]==='termMonths'){inp.min='0';inp.max='11';}
+        fw.appendChild(inp);
+        if(f[4]){var sfx=document.createElement('span');sfx.className='fsfx';sfx.textContent=f[4];fw.appendChild(sfx);}
+        row.appendChild(fw);card.appendChild(row);
+      });
+      // Per-account summary
+      var sumRow=document.createElement('div');sumRow.className='row';sumRow.style.background='rgba(200,151,58,0.06)';
+      var ts=(mc.ys>0?mc.ys+'yr ':''+(mc.mos>0?mc.mos+'mo':''));
+      var sumHtml='<div class="row-label" style="font-size:11px;color:var(--dim)">Saves <strong style="color:#5ec9a0">£'+fmtP(mc.saved)+'</strong> interest &middot; term shortened <strong style="color:#5ec9a0">'+(ts||'--')+'</strong>';
+      if(acc.paymentDay){
+        var nextPmt=mortgageNextPaymentDate(acc);
+        var totalMo2=(parseFloat(acc.termYears!=null?acc.termYears:(acc.term||22))||0)*12+(parseFloat(acc.termMonths)||0);
+        sumHtml+='<br>Remaining: <strong style="color:var(--gold)">'+Math.floor(totalMo2/12)+'yr '+totalMo2%12+'mo</strong> &middot; Next payment: '+nextPmt;
+      }
+      sumHtml+='</div>';
+      sumRow.innerHTML=sumHtml;
+      card.appendChild(sumRow);
+      grp.appendChild(card);accEl.appendChild(grp);
+    });
+  }
+  // Blended summary hero
+  var hero=document.getElementById('mortHero'),chart=document.getElementById('mortChart'),rec=document.getElementById('mortRec');
+  if(!hero)return;
+  var m=mortCalc();
+  var blendStr=m.rate.toFixed(2)+'%';
+  var ts2=(m.ys>0?m.ys+'yr ':'')+(m.mos>0?m.mos+'mo':'');
+  var multiAccount=S.mortgageAccounts.length>1;
+  hero.innerHTML='<div class="port-label">'+(multiAccount?'Blended mortgage summary':'Mortgage analysis')+'</div>'+
+    (multiAccount?'<div style="font-size:11px;color:var(--dim);margin-bottom:10px">Blended rate: <strong style="color:var(--gold)">'+blendStr+'</strong> &middot; Total balance: <strong style="color:var(--gold)">£'+fmtP(m.bal)+'</strong></div>':'')+
+    '<div class="stat-grid">'+
+    '<div class="stat-box"><div class="stat-lbl">Total payment/mo</div><div class="stat-val gold">£'+fmtP(m.pmt)+'/mo</div></div>'+
+    '<div class="stat-box"><div class="stat-lbl">With overpayments</div><div class="stat-val gold">£'+fmtP(m.pmt+m.over)+'/mo</div></div>'+
+    '<div class="stat-box"><div class="stat-lbl">Total interest saved</div><div class="stat-val green">£'+fmtP(m.saved)+'</div></div>'+
+    '<div class="stat-box"><div class="stat-lbl">Term shortened by</div><div class="stat-val green">'+(ts2||'--')+'</div></div>'+
+    '<div class="stat-box"><div class="stat-lbl">Total outstanding</div><div class="stat-val">£'+fmtP(m.bal)+'</div></div>'+
+    '<div class="stat-box"><div class="stat-lbl">Total interest (no OP)</div><div class="stat-val" style="font-size:16px">£'+fmtP(m.stdInt)+'</div></div></div>';
+  if(chart){
+    var mx=Math.max(m.stdInt,m.ovpInt,1);
+    chart.innerHTML='<div class="bar-chart-title">Interest comparison</div>'+
+      '<div class="bar-row"><div class="bar-lbl">Without overpayment</div><div class="bar-wrap"><div class="bar-fill" style="width:100%;background:var(--red)"></div></div><div class="bar-val">£'+fmtP(m.stdInt)+'</div></div>'+
+      '<div class="bar-row"><div class="bar-lbl">With £'+fmtP(m.over)+'/mo OP</div><div class="bar-wrap"><div class="bar-fill" style="width:'+Math.round(m.ovpInt/mx*100)+'%;background:var(--green)"></div></div><div class="bar-val">£'+fmtP(m.ovpInt)+'</div></div>'+
+      '<div class="bar-row"><div class="bar-lbl" style="color:#5ec9a0">Saved</div><div class="bar-wrap"><div class="bar-fill" style="width:'+Math.round(m.saved/mx*100)+'%;background:#5ec9a0"></div></div><div class="bar-val" style="color:#5ec9a0">£'+fmtP(m.saved)+'</div></div>';
+  }
+  if(rec){
+    rec.innerHTML='';
+    // Overpayment strategy: which account to focus on
+    if(S.mortgageAccounts.length>1){
+      // Rank accounts by rate descending - highest rate gets priority
+      var ranked=S.mortgageAccounts.slice().sort(function(a,b){return (parseFloat(b.rate)||0)-(parseFloat(a.rate)||0);});
+      var stratDiv=document.createElement('div');stratDiv.className='row';
+      var stratText='<strong>Overpayment priority (highest rate first):</strong><br>';
+      ranked.forEach(function(acc,i){
+        var mc2=mortCalcSingle(acc);
+        stratText+='£'+fmtP(parseFloat(acc.balance)||0)+' at '+acc.rate+'% — '+acc.name+(i===0?' <strong style="color:var(--gold)">(focus here)</strong>':'')+'<br>';
+      });
+      var highestRate=parseFloat(ranked[0].rate)||0;
+      var highestBal=parseFloat(ranked[0].balance)||0;
+      if(highestRate>0&&highestBal>0){
+        var extra100=mortCalcSingle(Object.assign({},ranked[0],{over:(parseFloat(ranked[0].over)||0)+100}));
+        var saved100=mortCalcSingle(ranked[0]).saved;
+        var newSaved=extra100.saved;
+        stratText+='<br>Focusing an extra £100/mo on '+ranked[0].name+' at '+highestRate+'% saves approximately £'+fmtP(newSaved-saved100)+' more in interest.';
+      }
+      stratDiv.innerHTML='<div class="row-label" style="font-size:12px;line-height:1.8;color:var(--dim)">'+stratText+'</div>';
+      rec.appendChild(stratDiv);
+    } else {
+      var rt=m.rate>=5?'At '+m.rate.toFixed(2)+'% your rate supports overpayment ahead of cash savings. Your £'+fmtP(m.over)+'/mo saves £'+fmtP(m.saved)+' in interest.':m.rate>=4?'At '+m.rate.toFixed(2)+'% overpaying competes well with savings rates. Balance ISA contributions with overpayments.':'At '+m.rate.toFixed(2)+'% your rate is low. Long-run equity returns historically exceed this — prioritise ISA contributions.';
+      rec.innerHTML='<div class="row"><div class="row-label" style="font-size:12px;line-height:1.6;color:var(--dim)">'+rt+'</div></div>';
+    }
+  }
+}
+function renderDebt(){
+  var hero=document.getElementById('debtHero');if(!hero)return;
+  var totBal=0,totInt=0,totMo=0;
+  S.creditCards.forEach(function(c){var cBal=c.startDate&&!c.payFull?ccCurrentBalance(c):(parseFloat(c.balance)||0);totBal+=cBal;if(!c.payFull)totInt+=ccInt(cBal,parseFloat(c.apr)||0,parseFloat(c.monthly)||0);totMo+=parseFloat(c.monthly)||0;});
+  S.loans.forEach(function(l){var orig=parseFloat(l.origBalance)||0,rate=parseFloat(l.rate)||0,mo=parseFloat(l.monthly)||0,term=parseInt(l.termMonths)||0,pd=parseInt(l.payDay)||1;var bal=l.startDate&&orig>0?loanCurrentBalance(orig,rate,mo,l.startDate,term,pd):(parseFloat(l.balance)||0);totBal+=bal;totInt+=loanInt(bal,rate,mo);totMo+=mo;});
+  var inc=totalInc(),dti=inc>0?(totMo/inc*100):0;
+  hero.innerHTML='<div class="port-label">Total debt commitments</div><div class="stat-grid"><div class="stat-box"><div class="stat-lbl">Total outstanding</div><div class="stat-val red">£'+fmtP(totBal)+'</div></div><div class="stat-box"><div class="stat-lbl">Monthly payments</div><div class="stat-val gold">£'+fmtP(totMo)+'/mo</div></div><div class="stat-box"><div class="stat-lbl">Remaining interest</div><div class="stat-val red">£'+fmtP(totInt)+'</div></div><div class="stat-box"><div class="stat-lbl">Debt-to-income</div><div class="stat-val '+(dti>40?'red':dti>25?'gold':'green')+'">'+dti.toFixed(2)+'%</div></div></div>';
+  var ccEl=document.getElementById('ccList');
+  if(ccEl){
+    ccEl.innerHTML='';
+    if(!S.creditCards.length)ccEl.innerHTML='<div style="text-align:center;padding:16px;color:var(--dimmer);font-size:12px">No credit cards added yet</div>';
+    S.creditCards.forEach(function(c,idx){
+      var bal=c.startDate&&!c.payFull?ccCurrentBalance(c):(parseFloat(c.balance)||0),apr=parseFloat(c.apr)||0,mo=parseFloat(c.monthly)||0,pf=c.payFull||false;
+      var mos=pf?1:ccMonths(bal,apr,mo),ti=pf?0:ccInt(bal,apr,mo);
+      var orig=parseFloat(c.origBalance)||bal,pp=orig>0?Math.min(100,Math.round((1-bal/orig)*100)):0;
+      var msStr=mos>=999?'Payment covers interest only':mos===1?'Paid monthly':Math.floor(mos/12)>0?Math.floor(mos/12)+'yr '+mos%12+'mo':mos+'mo';
+      var div=document.createElement('div');div.className='debt-card';
+      div.innerHTML='<div class="debt-header"><div class="debt-icon cc">&#128179;</div>'+
+        '<div style="flex:1"><div class="debt-name">'+c.name+'</div><div class="debt-type">Credit card'+(pf?' &middot; Paid in full monthly':'')+'</div></div>'+
+        '<div><div class="debt-balance cc">£'+fmtDec(bal,2)+'</div><div class="debt-sub">'+(pf?'Due day: '+(c.dueDay||'--')+' of month':msStr+' to clear')+'</div></div>'+
+        '<button class="del-btn" style="margin-left:8px" onclick="delCC('+idx+')">&#215;</button></div>'+
+        '<div id="cc-dinp-'+idx+'" class="debt-inputs"></div>'+
+        '<div class="debt-row"><span class="debt-row-label">Pay full balance each month</span><span id="cc-dtog-'+idx+'"></span></div>'+
+        (pf?'<div class="debt-row"><span class="debt-row-label">Payment due day</span><span id="cc-dueday-'+idx+'"></span></div>':'')+
+        (!pf&&bal>0?
+          '<div class="debt-row"><span class="debt-row-label">Paid off</span><div class="progress-bar"><div class="progress-fill" style="width:'+pp+'%;background:var(--green)"></div></div><span class="progress-pct">'+pp+'%</span></div>'+
+          '<div class="debt-detail"><div class="dd-cell"><div class="dd-label">APR</div><div class="dd-val">'+apr+'%</div></div><div class="dd-cell"><div class="dd-label">Total interest</div><div class="dd-val" style="color:#e07070">£'+fmtP(ti)+'</div></div><div class="dd-cell"><div class="dd-label">Clear date</div><div class="dd-val">'+(mos<999?clearDate(mos):'N/A')+'</div></div></div>':
+          '<div class="debt-detail"><div class="dd-cell"><div class="dd-label">APR</div><div class="dd-val">'+apr+'%</div></div><div class="dd-cell"><div class="dd-label">Interest cost</div><div class="dd-val" style="color:#5ec9a0">£0</div></div><div class="dd-cell"><div class="dd-label">Strategy</div><div class="dd-val" style="color:#5ec9a0">Optimal</div></div></div>');
+      ccEl.appendChild(div);
+      // Build CC inputs via DOM (avoids quote issues)
+      var ccInpGrid=document.getElementById('cc-dinp-'+idx);
+      if(ccInpGrid){
+        [['Balance',bal.toFixed(2),'balance','£',''],['APR',apr,'apr','','%'],['Monthly',mo,'monthly','£','']].forEach(function(fld){
+          var cell=document.createElement('div');cell.className='di-cell';
+          var lbl3=document.createElement('div');lbl3.className='di-label';lbl3.textContent=fld[0];cell.appendChild(lbl3);
+          var wrap=document.createElement('div');wrap.className='di-wrap';
+          if(fld[3]){var p=document.createElement('span');p.className='di-pfx';p.textContent=fld[3];wrap.appendChild(p);}
+          var inp3=document.createElement('input');inp3.className='di-input';inp3.type='number';inp3.value=fld[1];inp3.inputMode='decimal';
+          if(fld[0]==='APR')inp3.step='0.1';
+          inp3.onchange=(function(i,fn){return function(){updCC(i,fn,this.value);};})(idx,fld[2]);
+          wrap.appendChild(inp3);
+          if(fld[4]){var s=document.createElement('span');s.className='di-sfx';s.textContent=fld[4];wrap.appendChild(s);}
+          cell.appendChild(wrap);ccInpGrid.appendChild(cell);
+        });
+        if(!pf){
+          var sdCell=document.createElement('div');sdCell.className='di-cell';
+          var sdLbl=document.createElement('div');sdLbl.className='di-label';sdLbl.textContent='Start date';sdCell.appendChild(sdLbl);
+          var sdWrap=document.createElement('div');sdWrap.className='di-wrap';
+          var sdInp=document.createElement('input');sdInp.className='di-input';sdInp.type='date';sdInp.value=c.startDate||'';
+          sdInp.style.width='110px';
+          sdInp.onchange=(function(i){return function(){updCC(i,'startDate',this.value);};})(idx);
+          sdWrap.appendChild(sdInp);sdCell.appendChild(sdWrap);ccInpGrid.appendChild(sdCell);
+        }
+      }
+      var ccTog=document.getElementById('cc-dtog-'+idx);
+      if(ccTog){
+        var tog2=document.createElement('label');tog2.className='toggle';
+        var cb2=document.createElement('input');cb2.type='checkbox';cb2.checked=pf;
+        cb2.onchange=(function(i){return function(){updCC(i,'payFull',this.checked);};})(idx);
+        var tr2=document.createElement('div');tr2.className='tog-track';
+        var th2=document.createElement('div');th2.className='tog-thumb';
+        tog2.appendChild(cb2);tog2.appendChild(tr2);tog2.appendChild(th2);ccTog.appendChild(tog2);
+      }
+      var dueDayEl=document.getElementById('cc-dueday-'+idx);
+      if(dueDayEl&&pf){
+        var ddWrap=document.createElement('div');ddWrap.className='field-wrap';
+        var ddInp=document.createElement('input');ddInp.className='field';ddInp.type='number';
+        ddInp.min='1';ddInp.max='28';ddInp.placeholder='1-28';
+        ddInp.value=c.dueDay||'';ddInp.inputMode='numeric';
+        ddInp.onchange=(function(i){return function(){updCC(i,'dueDay',parseInt(this.value)||1);};})(idx);
+        var ddSfx=document.createElement('span');ddSfx.className='fsfx';ddSfx.textContent='of month';
+        ddWrap.appendChild(ddInp);ddWrap.appendChild(ddSfx);dueDayEl.appendChild(ddWrap);
+      }
+    });
+  }
+  var lnEl=document.getElementById('loanList');
+  if(lnEl){
+    lnEl.innerHTML='';
+    if(!S.loans.length)lnEl.innerHTML='<div style="text-align:center;padding:16px;color:var(--dimmer);font-size:12px">No loans added yet</div>';
+    S.loans.forEach(function(l,idx){
+      var orig=parseFloat(l.origBalance)||0,rate=parseFloat(l.rate)||0,mo=parseFloat(l.monthly)||0;
+      var term=parseInt(l.termMonths)||0,pd=parseInt(l.payDay)||1,sd=l.startDate||'';
+      var bal=sd&&orig>0?loanCurrentBalance(orig,rate,mo,sd,term,pd):(parseFloat(l.balance)||0);
+      bal=Math.round(bal*100)/100;
+      var made=sd&&orig>0?loanPaymentsMade(sd,term,pd):0;
+      var rem=term>0?Math.max(0,term-made):loanMonths(bal,rate,mo);
+      var ti=loanInt(bal,rate,mo),pp=orig>0?Math.min(100,Math.round((1-bal/orig)*100)):0;
+      var nextPmt=sd?nextPaymentDate(sd,term,pd):'--';
+      var msStr=rem>=999?'Payment too low':Math.floor(rem/12)>0?Math.floor(rem/12)+'yr '+rem%12+'mo':rem+'mo';
+      S.loans[idx].balance=bal;
+      var div=document.createElement('div');div.className='debt-card';
+      div.innerHTML='<div class="debt-header"><div class="debt-icon loan">&#128203;</div>'+
+        '<div style="flex:1"><div class="debt-name">'+l.name+'</div><div class="debt-type">Loan &middot; '+rate+'% pa'+(sd?' &middot; '+sd.replace(/-/g,'/'):'')+'</div></div>'+
+        '<div><div class="debt-balance loan">£'+fmtDec(bal,2)+'</div><div class="debt-sub">'+msStr+' remaining</div></div>'+
+        '<button class="del-btn" style="margin-left:8px" onclick="delLoan('+idx+')">&#215;</button></div>'+
+        '<div id="ln-dinp1-'+idx+'" class="debt-inputs"></div>'+
+        '<div id="ln-dinp2-'+idx+'" class="debt-inputs"></div>'+
+        (sd?'<div class="debt-row" style="background:rgba(45,122,92,0.08)"><span class="debt-row-label" style="font-size:11px;color:#5ec9a0">Auto-calculated &middot; '+made+' payments made &middot; Next: '+nextPmt+'</span></div>':'')+
+        '<div class="debt-row"><span class="debt-row-label">Paid off</span><div class="progress-bar"><div class="progress-fill" style="width:'+pp+'%;background:var(--blue)"></div></div><span class="progress-pct">'+pp+'%</span></div>'+
+        '<div class="debt-detail">'+
+        '<div class="dd-cell"><div class="dd-label">Current balance</div><div class="dd-val" style="color:#7a9ccc">£'+fmtDec(bal,2)+'</div></div>'+
+        '<div class="dd-cell"><div class="dd-label">Remaining interest</div><div class="dd-val" style="color:#e07070">£'+fmtP(ti)+'</div></div>'+
+        '<div class="dd-cell"><div class="dd-label">Clear date</div><div class="dd-val">'+(rem<999?clearDate(rem):'N/A')+'</div></div></div>';
+      lnEl.appendChild(div);
+      // Build loan inputs via DOM
+      var li1=document.getElementById('ln-inp1-'+idx);
+      if(li1){
+        [['Orig balance',orig,'origBalance','£',''],['Rate %',rate,'rate','','%'],['Monthly',mo,'monthly','£','']].forEach(function(fld){
+          var cell=document.createElement('div');cell.className='di-cell';
+          var lbl4=document.createElement('div');lbl4.className='di-label';lbl4.textContent=fld[0];cell.appendChild(lbl4);
+          var wrap=document.createElement('div');wrap.className='di-wrap';
+          if(fld[3]){var p=document.createElement('span');p.className='di-pfx';p.textContent=fld[3];wrap.appendChild(p);}
+          var inp4=document.createElement('input');inp4.className='di-input';inp4.type='number';inp4.value=fld[1];inp4.inputMode='decimal';
+          if(fld[0]==='Rate %')inp4.step='0.1';
+          inp4.onchange=(function(i,fn){return function(){updLoan(i,fn,this.value);};})(idx,fld[2]);
+          wrap.appendChild(inp4);
+          if(fld[4]){var s=document.createElement('span');s.className='di-sfx';s.textContent=fld[4];wrap.appendChild(s);}
+          cell.appendChild(wrap);li1.appendChild(cell);
+        });
+      }
+      var li2=document.getElementById('ln-inp2-'+idx);
+      if(li2){
+        // Term
+        var tc=document.createElement('div');tc.className='di-cell';
+        var tl=document.createElement('div');tl.className='di-label';tl.textContent='Term (mo)';tc.appendChild(tl);
+        var tw=document.createElement('div');tw.className='di-wrap';
+        var ti2=document.createElement('input');ti2.className='di-input';ti2.type='number';ti2.value=term||'';ti2.inputMode='decimal';
+        ti2.onchange=(function(i){return function(){updLoanTerm(i,this.value);};})(idx);
+        tw.appendChild(ti2);var ts=document.createElement('span');ts.className='di-sfx';ts.textContent='mo';tw.appendChild(ts);tc.appendChild(tw);li2.appendChild(tc);
+        // Start date
+        var dc=document.createElement('div');dc.className='di-cell';
+        var dl=document.createElement('div');dl.className='di-label';dl.textContent='Start date';dc.appendChild(dl);
+        var dw=document.createElement('div');dw.className='di-wrap';dw.style.cssText='padding:3px 4px';
+        var di2=document.createElement('input');di2.className='di-input';di2.type='month';di2.value=sd||'';di2.style.cssText='font-size:11px;width:100%';
+        di2.onchange=(function(i){return function(){updLoan(i,'startDate',this.value);};})(idx);
+        dw.appendChild(di2);dc.appendChild(dw);li2.appendChild(dc);
+        // Pay day
+        var pc=document.createElement('div');pc.className='di-cell';
+        var pl=document.createElement('div');pl.className='di-label';pl.textContent='Pay day';pc.appendChild(pl);
+        var pw=document.createElement('div');pw.className='di-wrap';
+        var pi2=document.createElement('input');pi2.className='di-input';pi2.type='number';pi2.value=pd||'';pi2.min='1';pi2.max='31';pi2.inputMode='decimal';
+        pi2.onchange=(function(i){return function(){updLoan(i,'payDay',this.value);};})(idx);
+        pw.appendChild(pi2);var ps=document.createElement('span');ps.className='di-sfx';ps.textContent='th';pw.appendChild(ps);pc.appendChild(pw);li2.appendChild(pc);
+      }
+    });
+  }
+  renderDebtInsights();
+}
+
+function updLoanTerm(idx,val){
+  if(!S.loans[idx])return;
+  var term=parseFloat(val)||0;S.loans[idx].termMonths=term;
+  var orig=parseFloat(S.loans[idx].origBalance)||0,rate=parseFloat(S.loans[idx].rate)||0;
+  if(orig>0&&rate>0&&term>0)S.loans[idx].monthly=Math.round(loanCalcPmt(orig,rate,term)*100)/100;
+  renderDebt();syncDebt();
+}
+
+function renderDebtInsights(){
+  var el=document.getElementById('debtInsights');if(!el)return;el.innerHTML='';
+  if(!S.creditCards.length&&!S.loans.length){el.innerHTML='<div style="text-align:center;padding:16px;color:var(--dimmer);font-size:12px">Add credit cards or loans above to see insights.</div>';return;}
+  var mortRate=S.mortgageInputs.rate||4.5,inc=totalInc(),dti=inc>0?(totalDebtMonthly()/inc*100):0,insights=[];
+  if(dti>35)insights.push({warn:true,title:'Debt-to-income '+dti.toFixed(2)+'% is above 35%',body:'Monthly debt payments of £'+fmtP(totalDebtMonthly())+' represent '+dti.toFixed(2)+'% of household income. Focus on clearing high-rate debts first.'});
+  S.creditCards.forEach(function(c){
+    var bal=parseFloat(c.balance)||0,apr=parseFloat(c.apr)||0,mo=parseFloat(c.monthly)||0;
+    if(c.payFull&&bal>0){insights.push({warn:false,title:c.name+': paid in full - optimal',body:'Zero interest on this '+apr+'% APR card. Monthly spend tracked at £'+mo+'. No action required.'});}
+    else if(bal>0&&apr>0&&mo>0){
+      var ti=ccInt(bal,apr,mo),mos=ccMonths(bal,apr,mo),saved=ti-ccInt(bal,apr,mo+100),msSaved=mos-ccMonths(bal,apr,mo+100);
+      if(apr>mortRate)insights.push({warn:true,title:c.name+': APR '+apr+'% exceeds mortgage rate',body:'Clearing this faster takes priority. Balance £'+fmtDec(bal,2)+'. An extra £100/mo saves £'+fmtP(saved)+(msSaved>0?' and clears it '+msSaved+' months earlier':'')+'.'});
+      else if(mos>=999)insights.push({warn:true,title:c.name+': payment only covers interest',body:'At £'+mo+'/mo your payment does not reduce the balance. You need more than £'+Math.ceil(bal*apr/100/12)+'/mo to make progress.'});
+      else if(mos>24)insights.push({warn:false,title:c.name+': '+Math.round(mos)+' months to clear',body:'Clears in '+clearDate(mos)+', costing £'+fmtP(ti)+' interest. An extra £100/mo saves £'+fmtP(saved)+(msSaved>0?' and clears it '+msSaved+' months earlier':'')+'.'});
+    }
+  });
+  S.loans.forEach(function(l){
+    var bal=parseFloat(l.balance)||0,rate=parseFloat(l.rate)||0,mo=parseFloat(l.monthly)||0;
+    if(bal>0&&rate>0&&mo>0){
+      var ti=loanInt(bal,rate,mo),mos=loanMonths(bal,rate,mo),saved=ti-loanInt(bal,rate,mo+100),msSaved=mos-loanMonths(bal,rate,mo+100);
+      if(rate>mortRate)insights.push({warn:true,title:l.name+': rate '+rate+'% exceeds mortgage rate',body:'Prioritise clearing this before increasing mortgage overpayments. Balance £'+fmtDec(bal,2)+'. Extra £100/mo saves £'+fmtP(saved)+(msSaved>0?' and shortens term by '+msSaved+' months':'')+'.'});
+      else if(saved>200&&mos>12)insights.push({warn:false,title:l.name+': £'+fmtP(saved)+' saved with extra payments',body:'At £'+mo+'/mo clears in '+clearDate(mos)+'. Extra £100/mo saves £'+fmtP(saved)+' in interest'+(msSaved>0?' and shortens by '+msSaved+' months':'')+'. Compare '+rate+'% vs your '+mortRate+'% mortgage.'});
+    }
+  });
+  if(!insights.length){el.innerHTML='<div class="info-box"><p><strong>Debts on track</strong><br>Your current debt commitments are being managed well at current payment rates.</p></div>';return;}
+  insights.forEach(function(ins){var box=document.createElement('div');box.className=ins.warn?'warn-box':'info-box';box.innerHTML='<p><strong>'+ins.title+'</strong><br>'+ins.body+'</p>';el.appendChild(box);});
+}
+
+function renderRecs(){
+  var container=document.getElementById('recsContainer');if(!container)return;
+  var inc=totalInc(),savTotal=totalSavings(),sr=savingRate(),hs=holdingStats(),m=mortCalc(),recs=[];
+  var hWithGain=S.holdings.filter(function(h){var sh=parseFloat(h.shares)||0,pr=parseFloat(h.price)||0,co=parseFloat(h.cost)||0;return sh>0&&pr>0&&co>0&&(sh*pr-sh*co)>0;});
+  if(hWithGain.length){
+    var totalGain=hWithGain.reduce(function(s,h){var sh=parseFloat(h.shares)||0,pr=parseFloat(h.price)||0,co=parseFloat(h.cost)||0;return s+(sh*pr-sh*co);},0);
+    var taxable=Math.max(0,totalGain-3000),cgtDue=Math.round(taxable*0.24),names=hWithGain.map(function(h){return h.ticker;}).join(', ');
+    recs.push({id:'bed-isa',priority:'high',title:'Bed and ISA: '+names,body:'Holdings gain: £'+fmtP(totalGain)+' vs cost basis. '+(taxable>0?'After £3,000 CGT allowance, ~£'+fmtP(taxable)+' taxable (~£'+fmtP(cgtDue)+' CGT at 24%). Selling and rebuying inside your ISA permanently shelters future gains.':'Gain is within the £3,000 CGT allowance - zero tax to move to ISA this year.'),impact:taxable>0?'~£'+fmtP(cgtDue)+' tax to shelter future gains':'Zero tax cost - move to ISA before 5 April'});
+  }
+  var partnerInSav=(S.spendingCategories.find(function(c){return c.id===50;})||{items:[]}).items.some(function(i){return i.name.toLowerCase().indexOf('partner')>=0&&(i.name.toLowerCase().indexOf('sipp')>=0||i.name.toLowerCase().indexOf('pension')>=0);});
+  if(!partnerInSav)recs.push({id:'partner-pension',priority:'high',title:'Open a pension for your partner',body:'No partner pension in your Savings and Investments. Even £100/month with 20% HMRC relief at source grows significantly over time.',impact:'Potential six-figure pension pot over 25 years'});
+  if(sr<15)recs.push({id:'saving-rate',priority:'medium',title:'Saving rate '+sr.toFixed(1)+'% - target 20%',body:'Your Savings and Investments total £'+fmtP(savTotal)+'/mo ('+sr.toFixed(1)+'% of income). To reach 20% you need £'+Math.round(inc*0.2).toLocaleString()+'/mo.',impact:'Reaching 20% adds ~£'+Math.round((inc*0.2-savTotal)*120).toLocaleString()+' over 10 years at 7%'});
+  var pb=S.invAccounts.filter(function(a){return a.name.toLowerCase().indexOf('premium')>=0||a.name.toLowerCase().indexOf('bond')>=0;}).reduce(function(s,a){return s+(parseFloat(a.value)||0);},0);
+  if(pb>20000)recs.push({id:'pb-isa',priority:'low',title:'Move £'+fmtP(pb-15000)+' Premium Bond surplus into ISA',body:'You hold £'+fmtP(pb)+' in Premium Bonds. After £15,000 emergency fund, ~£'+fmtP(pb-15000)+' is surplus earning ~4.4% vs ~7% long-run equity.',impact:'~£'+fmtP((pb-15000)*0.026)+'/yr additional expected return in ISA'});
+  var highRate=S.creditCards.filter(function(c){return !c.payFull&&(parseFloat(c.apr)||0)>m.rate&&(parseFloat(c.balance)||0)>0;});
+  if(highRate.length)recs.push({id:'debt-priority',priority:'high',title:'High-rate credit card debt takes priority',body:'You have credit card debt at rates above your mortgage. Clearing these takes priority over mortgage overpayments and additional ISA contributions.',impact:'Clearing high-rate debt gives a risk-free return equal to the APR'});
+  container.innerHTML='';var shown=0;
+  recs.forEach(function(rec){
+    if(S.dismissedRecs.indexOf(rec.id)>=0)return;shown++;
+    var accepted=S.acceptedRecs.indexOf(rec.id)>=0;
+    var div=document.createElement('div');div.className='rec-card'+(accepted?' accepted':'');
+    var pri=document.createElement('div');pri.className='rec-pri '+rec.priority;pri.textContent=rec.priority.toUpperCase()+' PRIORITY';div.appendChild(pri);
+    var tit=document.createElement('div');tit.className='rec-title';tit.textContent=rec.title;div.appendChild(tit);
+    var bod=document.createElement('div');bod.className='rec-body';bod.textContent=rec.body;div.appendChild(bod);
+    var imp=document.createElement('div');imp.className='rec-impact';imp.textContent='Impact: '+rec.impact;div.appendChild(imp);
+    if(accepted){
+      var acc=document.createElement('div');acc.style.cssText='color:#5ec9a0;font-size:12px;font-weight:600;text-align:center';acc.textContent='Accepted';div.appendChild(acc);
+    } else {
+      var acts=document.createElement('div');acts.className='rec-actions';
+      var ab=document.createElement('button');ab.className='rec-accept';ab.textContent='Accept';
+      ab.onclick=(function(id){return function(){acceptRec(id);};})(rec.id);
+      var db=document.createElement('button');db.className='rec-reject';db.textContent='Dismiss';
+      db.onclick=(function(id){return function(){dismissRec(id);};})(rec.id);
+      acts.appendChild(ab);acts.appendChild(db);div.appendChild(acts);
+    }
+    container.appendChild(div);
+  });
+  if(!shown)container.innerHTML='<div style="text-align:center;padding:20px;color:var(--dimmer);font-size:12px">All recommendations reviewed.</div>';
+}
+function acceptRec(id){if(id&&S.acceptedRecs.indexOf(id)<0)S.acceptedRecs.push(id);persist();renderRecs();}
+function dismissRec(id){if(id&&S.dismissedRecs.indexOf(id)<0)S.dismissedRecs.push(id);persist();renderRecs();}
+
+function calcHealthScore(){
+  var score=0,tips=[];
+  var inc=totalInc(),exp=totalExp(),sav=totalSavings(),sr=savingRate();
+  var res=residual();
+  if(sr>=20)score+=2;
+  else if(sr>=10){score+=1;tips.push('Increase your saving rate from '+sr.toFixed(2)+'% to 20% of income (gap: \u00a3'+Math.round(inc*0.2-sav)+'/mo)');}
+  else{tips.push('Your saving rate is '+sr.toFixed(2)+'% - aim for at least 20% of income (gap: \u00a3'+Math.round(inc*0.2-sav)+'/mo)');}
+  var debtMo=totalDebtMonthly();
+  var dti=inc>0?(debtMo/inc*100):0;
+  if(dti===0)score+=2;
+  else if(dti<20){score+=1.5;tips.push('Low debt-to-income at '+dti.toFixed(2)+'% - keep payments consistent to clear faster');}
+  else if(dti<35){score+=1;tips.push('Debt-to-income is '+dti.toFixed(2)+'% - consider increasing payments or consolidating high-interest debt');}
+  else{tips.push('High debt-to-income ratio ('+dti.toFixed(2)+'%) - prioritise reducing debt commitments');}
+  var emergencyTarget=exp*3;
+  var accessible=S.invAccounts.reduce(function(s,a){return s+(parseFloat(a.value)||0);},0);
+  if(accessible>=exp*6){score+=2;}
+  else if(accessible>=exp*3){score+=1.5;tips.push('You have '+Math.round(accessible/exp)+' months expenses in accessible savings - aim for 6 months (\u00a3'+fmtP(exp*6)+')');}
+  else{score+=Math.max(0,accessible/emergencyTarget);tips.push('Build emergency fund to 3-6 months expenses (current: \u00a3'+fmtP(accessible)+', target: \u00a3'+fmtP(exp*3)+' to \u00a3'+fmtP(exp*6)+')');}
+  var activeInv=S.investments.filter(function(inv){return inv.enabled;}).length;
+  if(activeInv>=3)score+=1;
+  else if(activeInv>=2){score+=0.5;tips.push('Consider diversifying investments further - currently '+activeInv+' active strategies');}
+  else{tips.push('Diversify your investments - consider ISA, pension, and bonds across different asset classes');}
+  var mortOver=S.mortgageAccounts?S.mortgageAccounts.reduce(function(s,a){return s+(parseFloat(a.over)||0);},0):0;
+  if(mortOver>0){score+=1;}
+  else{tips.push('Consider mortgage overpayments - even \u00a3100/mo can save thousands in interest and shorten your term');}
+  if(res>0){score+=1;}
+  else if(res===0){score+=0.5;tips.push('Your budget is exactly balanced - consider building a buffer for unexpected costs');}
+  else{tips.push('You have a monthly deficit of \u00a3'+fmtP(Math.abs(res))+' - review spending categories or increase income');}
+  var highInt=S.creditCards.filter(function(c){return !c.payFull&&(parseFloat(c.apr)||0)>20&&(parseFloat(c.balance)||0)>0;});
+  if(highInt.length===0)score+=1;
+  else{tips.push('Pay down high-APR credit cards ('+highInt.map(function(c){return c.name+' at '+c.apr+'%';}).join(', ')+') - this debt costs more than investments typically return');}
+  return{score:Math.min(10,Math.round(score*10)/10),tips:tips};
+}
+function renderSummary(){
+  var l=lbl(),inc=totalInc(),exp=totalExp(),surp=surplus(),savTotal=totalSavings(),sr=savingRate();
+  var ic=document.getElementById('sum-inc');
+  if(ic){ic.innerHTML='';S.incomeCategories.forEach(function(cat){var ct=cat.items.reduce(function(s,i){return s+(parseFloat(i.amount)||0);},0);var r=document.createElement('div');r.className='sum-row';r.innerHTML='<span class="lbl">'+cat.name+'</span><span class="val pos">£'+fmtP(toD(ct))+'/'+l+'</span>';ic.appendChild(r);});var t=document.createElement('div');t.className='sum-row total';t.innerHTML='<span class="lbl">Total income</span><span class="val gold">£'+fmtP(toD(inc))+'/'+l+'</span>';ic.appendChild(t);}
+  var ec=document.getElementById('sum-exp');
+  if(ec){
+    ec.innerHTML='';
+    var nonSavCats=S.spendingCategories.filter(function(c){return c.id!==50;});
+    nonSavCats.forEach(function(cat){
+      var ct=cat.items.reduce(function(s,i){return s+(parseFloat(i.amount)||0);},0);
+      var r=document.createElement('div');r.className='sum-row';
+      r.innerHTML='<span class="lbl">'+cat.name+'</span><span class="val neg">(£'+fmtP(toD(ct))+')/'+l+'</span>';
+      ec.appendChild(r);
+    });
+    var nonSavTotal=nonSavCats.reduce(function(s,c){return s+c.items.reduce(function(a,i){return a+(parseFloat(i.amount)||0);},0);},0);
+    // Subtotal before savings
+    var sub1=document.createElement('div');sub1.className='sum-row total';
+    sub1.innerHTML='<span class="lbl">Total spending (excl. savings)</span><span class="val neg">(£'+fmtP(toD(nonSavTotal))+')/'+l+'</span>';
+    ec.appendChild(sub1);
+    // Surplus before savings
+    var surpRow=document.createElement('div');surpRow.className='sum-row';
+    surpRow.innerHTML='<span class="lbl" style="color:#5ec9a0">Surplus before savings</span><span class="val pos">£'+fmtP(toD(surp))+'/'+l+'</span>';
+    ec.appendChild(surpRow);
+    // Savings total
+    var savRow=document.createElement('div');savRow.className='sum-row';
+    savRow.innerHTML='<span class="lbl" style="color:var(--gold)">Savings and investments</span><span class="val" style="color:var(--gold)">(£'+fmtP(toD(savTotal))+')/'+l+'</span>';
+    ec.appendChild(savRow);
+    // Grand total
+    var grandTotal=nonSavTotal+savTotal;
+    var gt=document.createElement('div');gt.className='sum-row total';
+    gt.innerHTML='<span class="lbl">Total (incl. savings)</span><span class="val neg">(£'+fmtP(toD(grandTotal))+')/'+l+'</span>';
+    ec.appendChild(gt);
+  }
+  var sc2=document.getElementById('sum-savings-card');
+  if(sc2){sc2.innerHTML='';var sc=S.spendingCategories.find(function(c){return c.id===50;});if(sc)sc.items.forEach(function(item){var v=parseFloat(item.amount)||0,pct=savTotal>0?(v/savTotal*100).toFixed(2):0;var r=document.createElement('div');r.className='sum-row';r.innerHTML='<span class="lbl">'+item.name+'</span><span class="val pos">£'+fmtP(toD(v))+'/'+l+' ('+pct+'%)</span>';sc2.appendChild(r);});var t=document.createElement('div');t.className='sum-row total';t.innerHTML='<span class="lbl">Total savings</span><span class="val gold">£'+fmtP(toD(savTotal))+'/'+l+'</span>';sc2.appendChild(t);}
+  var se=document.getElementById('sum-surp'),sl=document.getElementById('sum-lbl');
+  if(se){se.textContent=(surp<0?'(£'+fmtP(Math.abs(Math.round(toD(surp))))+')':(surp===0?'£0':'£'+fmtP(toD(surp))));se.className='val '+(surp>=0?'gold':'neg');}
+  if(sl)sl.textContent='Residual '+(surp>=0?'surplus':'deficit');
+  var sst=document.getElementById('sum-savings-total'),ssrEl=document.getElementById('sum-saving-rate');
+  if(sst)sst.textContent='£'+fmtP(toD(savTotal))+'/'+l;
+  if(ssrEl){ssrEl.textContent=sr.toFixed(2)+'% of income';ssrEl.className='val '+(sr>=20?'pos':sr>=10?'gold':'neg');}
+  var pc=document.getElementById('sum-port');
+  if(pc){pc.innerHTML='';var grand=0;S.invAccounts.forEach(function(acc){var v=parseFloat(acc.value)||0;grand+=v;var r=document.createElement('div');r.className='sum-row';r.innerHTML='<span class="lbl">'+acc.name+'</span><span class="val">£'+fmtP(v)+'</span>';pc.appendChild(r);});S.holdings.forEach(function(h){var v=(parseFloat(h.shares)||0)*(parseFloat(h.price)||0);if(v>0){grand+=v;var r=document.createElement('div');r.className='sum-row';r.innerHTML='<span class="lbl">'+h.ticker+' '+h.name+'</span><span class="val">£'+fmtP(v)+'</span>';pc.appendChild(r);}});var hs=holdingStats();if(hs.hasCost){var gr=document.createElement('div');gr.className='sum-row';gr.innerHTML='<span class="lbl">Holdings gain vs cost</span><span class="val '+(hs.gain>=0?'pos':'neg')+'">'+(hs.gain>=0?'+':'-')+'£'+fmtP(Math.abs(hs.gain))+'</span>';pc.appendChild(gr);}var t=document.createElement('div');t.className='sum-row total';t.innerHTML='<span class="lbl">Total portfolio</span><span class="val gold">£'+fmtP(grand)+'</span>';pc.appendChild(t);}
+  var si=document.getElementById('sum-insights');
+  if(si){si.innerHTML='';var m=mortCalc(),hs2=holdingStats();var ins=[{warn:sr<10,title:'Saving rate: '+sr.toFixed(2)+'% of income',body:'Actively saving £'+fmtP(savTotal)+'/mo. '+(sr>=20?'Above the 20% benchmark.':'Below 20% - gap of £'+Math.round(Math.max(0,inc*0.2-savTotal)).toLocaleString()+'/mo. Add to Savings and Investments category.')},{warn:false,title:'Mortgage: £'+fmtP(m.saved)+' interest saved',body:'Overpaying £'+m.over+'/mo at '+m.rate.toFixed(2)+'% shortens your '+Math.floor(m.yr)+'yr '+(Math.round((m.yr%1)*12))+'mo term by '+(m.ys>0?m.ys+'yr ':''+(m.mos>0?m.mos+'mo':''))+' and saves £'+fmtP(m.saved)+' total.'}];if(hs2.hasCost)ins.push({warn:false,title:'Portfolio gain vs cost: £'+fmtP(hs2.gain),body:'Holdings market value: £'+fmtP(hs2.mv)+'. Cost basis: £'+fmtP(hs2.cb)+'. Gain: +'+(hs2.gain>=0?'':'-')+'£'+fmtP(Math.abs(hs2.gain))+' ('+(hs2.cb>0?((hs2.gain/hs2.cb)*100).toFixed(2):'0')+'%). CGT allowance £3,000/yr.'});ins.forEach(function(i){var b=document.createElement('div');b.className=i.warn?'warn-box':'info-box';b.innerHTML='<p><strong>'+i.title+'</strong><br>'+i.body+'</p>';si.appendChild(b);});}
+  var hs=calcHealthScore();
+  var hsEl=document.getElementById('health-score-section');
+  if(hsEl){
+    var scoreColor=hs.score>=7?'#5ec9a0':hs.score>=5?'var(--gold)':'#e07070';
+    hsEl.innerHTML='<div class="port-label">Financial Health Score</div>'+
+      '<div style="font-family:DM Serif Display,serif;font-size:48px;color:'+scoreColor+';font-style:italic;line-height:1;margin:8px 0">'+hs.score.toFixed(1)+'</div>'+
+      '<div style="font-size:13px;color:var(--dim)">out of 10</div>'+
+      '<div style="margin-top:10px;height:8px;background:var(--card2);border-radius:4px;overflow:hidden"><div style="height:100%;width:'+(hs.score*10)+'%;background:'+scoreColor+';border-radius:4px;transition:width .3s"></div></div>';
+  }
+  var htEl=document.getElementById('health-tips-section');
+  if(htEl){
+    htEl.innerHTML='';
+    if(hs.tips.length>0){
+      var tLbl=document.createElement('div');tLbl.className='scr-lbl';tLbl.textContent='How to improve your score';htEl.appendChild(tLbl);
+      hs.tips.forEach(function(tip){
+        var tb=document.createElement('div');tb.style.cssText='background:var(--card);border-radius:10px;padding:10px 13px;margin-bottom:6px;border-left:3px solid var(--gold);font-size:12px;color:var(--dim);line-height:1.5';
+        tb.innerHTML=tip;htEl.appendChild(tb);
+      });
+    } else {
+      var tb=document.createElement('div');tb.style.cssText='background:var(--card);border-radius:10px;padding:10px 13px;margin-bottom:6px;border-left:3px solid var(--green);font-size:12px;color:#5ec9a0;line-height:1.5';
+      tb.innerHTML='<strong>Excellent!</strong> Your financial health is in great shape across all categories.';htEl.appendChild(tb);
+    }
+  }
+}
+
+function drawDonut(){
+  var c=document.getElementById('donutCanvas');if(!c)return;
+  var ctx=c.getContext('2d'),dpr=window.devicePixelRatio||2;
+  c.width=320*dpr;c.height=320*dpr;ctx.scale(dpr,dpr);
+  var cx=160,cy=160,r=66,t=18;ctx.clearRect(0,0,320,320);
+  var sc=S.spendingCategories.find(function(cat){return cat.id===50;});
+  if(!sc||!sc.items.length){ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.strokeStyle='rgba(245,242,237,0.08)';ctx.lineWidth=t;ctx.stroke();return;}
+  var total=sc.items.reduce(function(s,i){return s+(parseFloat(i.amount)||0);},0);
+  if(!total){ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.strokeStyle='rgba(245,242,237,0.08)';ctx.lineWidth=t;ctx.stroke();return;}
+  var start=-Math.PI/2,gap=0.04,cols=['#2d7a5c','#c8973a','#2d6a9c','#7a5c9c','#2a7a7a','#b84040','#5a8a9c'];
+  sc.items.forEach(function(item,i){var sl=(parseFloat(item.amount)||0)/total*(Math.PI*2-gap*sc.items.length);if(sl<=0)return;ctx.beginPath();ctx.arc(cx,cy,r,start,start+sl);ctx.strokeStyle=cols[i%cols.length];ctx.lineWidth=t;ctx.lineCap='round';ctx.stroke();start+=sl+gap;});
+}
+
+function updItem(type,catId,itemId,val){var cats=type==='income'?S.incomeCategories:S.spendingCategories;var cat=cats.find(function(c){return c.id===catId;});if(cat){var item=cat.items.find(function(i){return i.id===itemId;});if(item)item.amount=parseFloat(val)||0;}update();}
+function updItemName(type,catId,itemId,val){var cats=type==='income'?S.incomeCategories:S.spendingCategories;var cat=cats.find(function(c){return c.id===catId;});if(cat){var item=cat.items.find(function(i){return i.id===itemId;});if(item){item.name=val;if(item.invRef){var inv=S.investments.find(function(x){return x.id===item.invRef;});if(inv)inv.name=val;}}}persist();}
+function updItemSub(type,catId,itemId,val){var cats=type==='income'?S.incomeCategories:S.spendingCategories;var cat=cats.find(function(c){return c.id===catId;});if(cat){var item=cat.items.find(function(i){return i.id===itemId;});if(item)item.sub=val;}persist();}
+function delItem(type,catId,itemId){var cats=type==='income'?S.incomeCategories:S.spendingCategories;var cat=cats.find(function(c){return c.id===catId;});if(cat)cat.items=cat.items.filter(function(i){return i.id!==itemId;});update();}
+function delCat(type,catId){if(type==='income')S.incomeCategories=S.incomeCategories.filter(function(c){return c.id!==catId;});else S.spendingCategories=S.spendingCategories.filter(function(c){return c.id!==catId;});update();}
+function toggleInv(id,val){var i=S.investments.find(function(x){return x.id===id;});if(i)i.enabled=val;update();}
+function delInv(id){S.investments=S.investments.filter(function(x){return x.id!==id;});update();}
+function updInvMode(id,val){var i=S.investments.find(function(x){return x.id===id;});if(i)i.mode=val;update();}
+function updInvAmt(id,val){var i=S.investments.find(function(x){return x.id===id;});if(i){if(i.mode==='fixed')i.amount=parseFloat(val)||0;else i.pct=parseFloat(val)||0;}update();}
+function updHolding(idx,field,val){if(S.holdings[idx])S.holdings[idx][field]=parseFloat(val)||0;renderPortfolio();persist();}
+function updHoldingName(idx,val){if(S.holdings[idx])S.holdings[idx].name=val;persist();}
+function delHolding(idx){S.holdings.splice(idx,1);update();}
+function updInvAcc(idx,val){if(S.invAccounts[idx])S.invAccounts[idx].value=parseFloat(val)||0;renderPortfolio();persist();}
+function updInvAccName(idx,val){if(S.invAccounts[idx])S.invAccounts[idx].name=val;persist();}
+function delInvAcc(idx){S.invAccounts.splice(idx,1);update();}
+function updCC(idx,field,val){if(!S.creditCards[idx])return;if(field==='payFull')S.creditCards[idx].payFull=val;else if(field==='dueDay')S.creditCards[idx].dueDay=parseInt(val)||1;else if(field==='startDate')S.creditCards[idx].startDate=val;else S.creditCards[idx][field]=Math.round((parseFloat(val)||0)*100)/100;renderDebt();syncDebt();}
+function delCC(idx){S.creditCards.splice(idx,1);syncDebt();}
+function updLoan(idx,field,val){if(!S.loans[idx])return;if(field==='startDate')S.loans[idx][field]=val;else S.loans[idx][field]=parseFloat(val)||0;renderDebt();syncDebt();}
+function delLoan(idx){S.loans.splice(idx,1);syncDebt();}
+
+function openModal(type,catId){
+  modalType=type;activeCatId=catId||null;
+  var titles={'income-cat':'Add income category','spending-cat':'Add spending category','income-item':'Add income item','spending-item':'Add spending item','invest':'Add investment category','holding':'Add holding','inv-acc':'Add investment account'};
+  document.getElementById('modalTitle').textContent=titles[type]||'Add';
+  var body=document.getElementById('modalBody');
+  if(type==='income-cat')body.innerHTML='<div class="modal-field"><div class="modal-label">Category name</div><input class="modal-input" id="mn" placeholder="e.g. Rental income"></div>';
+  else if(type==='spending-cat')body.innerHTML='<div class="modal-field"><div class="modal-label">Category name</div><input class="modal-input" id="mn" placeholder="e.g. Healthcare"></div><div class="modal-field"><div class="modal-label">Colour</div><div class="color-row">'+COLORS_ARR.map(function(c,i){return '<div class="color-swatch'+(i===0?' selected':'')+'" style="background:'+c+'" data-color="'+c+'" onclick="selColor(this)"></div>';}).join('')+'</div></div>';
+  else if(type==='income-item'||type==='spending-item')body.innerHTML='<div class="modal-field"><div class="modal-label">Name</div><input class="modal-input" id="mn" placeholder="Description"></div><div class="modal-field"><div class="modal-label">Note (optional - add keywords for tax rebate detection)</div><input class="modal-input" id="msub" placeholder="e.g. temporary workplace, second office"></div><div class="modal-field"><div class="modal-label">Monthly amount</div><input class="modal-input" id="mamt" type="number" placeholder="0" inputmode="decimal"></div>';
+  else if(type==='invest')body.innerHTML='<div class="modal-field"><div class="modal-label">Name</div><input class="modal-input" id="mn" placeholder="e.g. Crypto"></div><div class="modal-field"><div class="modal-label">Description</div><input class="modal-input" id="mdesc" placeholder="e.g. via Coinbase"></div><div class="modal-row"><div class="modal-field"><div class="modal-label">Mode</div><select class="modal-input" id="mmode" onchange="modeChg()"><option value="fixed">Fixed /mo</option><option value="pct">% of savings</option></select></div><div class="modal-field"><div class="modal-label" id="mamtlbl">Amount /mo</div><input class="modal-input" id="mamt" type="number" placeholder="0" inputmode="decimal"></div></div><div class="modal-field"><div class="modal-label">Colour</div><div class="color-row">'+COLORS_ARR.map(function(c,i){return '<div class="color-swatch'+(i===0?' selected':'')+'" style="background:'+c+'" data-color="'+c+'" onclick="selColor(this)"></div>';}).join('')+'</div></div>';
+  else if(type==='holding')body.innerHTML='<div class="modal-row"><div class="modal-field"><div class="modal-label">Ticker</div><input class="modal-input" id="mticker" placeholder="VWRP" style="text-transform:uppercase"></div><div class="modal-field"><div class="modal-label">Name</div><input class="modal-input" id="mhname" placeholder="Fund name"></div></div><div class="modal-row"><div class="modal-field"><div class="modal-label">Shares</div><input class="modal-input" id="mshares" type="number" placeholder="0" inputmode="decimal"></div><div class="modal-field"><div class="modal-label">Price</div><input class="modal-input" id="mprice" type="number" placeholder="0.00" inputmode="decimal"></div></div><div class="modal-field"><div class="modal-label">Cost per share (optional)</div><input class="modal-input" id="mcost" type="number" placeholder="0.00" inputmode="decimal"></div>';
+  else if(type==='inv-acc')body.innerHTML='<div class="modal-field"><div class="modal-label">Account name</div><input class="modal-input" id="mn" placeholder="e.g. Vanguard SIPP"></div><div class="modal-field"><div class="modal-label">Current value</div><input class="modal-input" id="mamt" type="number" placeholder="0" inputmode="decimal"></div>';
+  document.getElementById('modalBg').classList.add('open');
+  setTimeout(function(){var f=document.getElementById('mn')||document.getElementById('mticker');if(f)f.focus();},150);
+}
+function modeChg(){var m=document.getElementById('mmode').value;var l=document.getElementById('mamtlbl');if(l)l.textContent=m==='fixed'?'Amount /mo':'% of savings';}
+function selColor(el){document.querySelectorAll('.color-swatch').forEach(function(s){s.classList.remove('selected');});el.classList.add('selected');}
+function closeModal(){document.getElementById('modalBg').classList.remove('open');}
+function gi(id){var e=document.getElementById(id);return e?e.value.trim():'';}
+function gn(id){var e=document.getElementById(id);return e?(parseFloat(e.value)||0):0;}
+function saveModal(){
+  var type=modalType,nid=S.nextId++;
+  if(type==='income-cat'){var n=gi('mn');if(!n)return;S.incomeCategories.push({id:nid,name:n,items:[]});}
+  else if(type==='spending-cat'){var n=gi('mn');if(!n)return;var ce=document.querySelector('.color-swatch.selected');S.spendingCategories.push({id:nid,name:n,color:ce?ce.dataset.color:COLORS_ARR[0],items:[]});}
+  else if(type==='income-item'){var n=gi('mn');if(!n)return;var cat=S.incomeCategories.find(function(c){return c.id===activeCatId;});if(cat)cat.items.push({id:nid,name:n,sub:gi('msub'),amount:gn('mamt')});}
+  else if(type==='spending-item'){var n=gi('mn');if(!n)return;var cat=S.spendingCategories.find(function(c){return c.id===activeCatId;});if(cat)cat.items.push({id:nid,name:n,sub:gi('msub'),amount:gn('mamt')});}
+  else if(type==='invest'){var n=gi('mn');if(!n)return;var ce=document.querySelector('.color-swatch.selected');var mode=gi('mmode'),amt=gn('mamt');S.investments.push({id:nid,name:n,desc:gi('mdesc'),color:ce?ce.dataset.color:COLORS_ARR[0],mode:mode,amount:mode==='fixed'?amt:0,pct:mode==='pct'?amt:0,enabled:true});}
+  else if(type==='holding'){var tk=gi('mticker').toUpperCase();if(!tk)return;S.holdings.push({id:nid,ticker:tk,name:gi('mhname'),shares:gn('mshares'),price:gn('mprice'),cost:gn('mcost')});}
+  else if(type==='inv-acc'){var n=gi('mn');if(!n)return;S.invAccounts.push({id:nid,name:n,value:gn('mamt')});}
+  closeModal();update();
+}
+
+function openDebtModal(type){
+  debtModalType=type;
+  document.getElementById('debtModalTitle').textContent=type==='cc'?'Add credit card':'Add loan';
+  var body=document.getElementById('debtModalBody');
+  if(type==='cc')body.innerHTML='<div class="modal-field"><div class="modal-label">Card name</div><input class="modal-input" id="dn" placeholder="e.g. Barclaycard"></div><div class="modal-row"><div class="modal-field"><div class="modal-label">Current balance</div><input class="modal-input" id="dbal" type="number" placeholder="0" inputmode="decimal"></div><div class="modal-field"><div class="modal-label">APR %</div><input class="modal-input" id="dapr" type="number" placeholder="0.0" step="0.1" inputmode="decimal"></div></div><div class="modal-field"><div class="modal-label">Monthly payment</div><input class="modal-input" id="dmo" type="number" placeholder="0" inputmode="decimal"></div><div class="modal-field"><div class="modal-label">Payment due day (1-28)</div><input class="modal-input" id="ddueday" type="number" min="1" max="28" placeholder="1"></div><div class="modal-row"><div class="modal-field"><div class="modal-label">Start date (for balance tracking)</div><input class="modal-input" id="dstart" type="date"></div></div><div class="modal-field" style="display:flex;align-items:center;gap:12px;margin-top:6px"><label class="toggle"><input type="checkbox" id="dpf"><div class="tog-track"></div><div class="tog-thumb"></div></label><span style="font-size:13px;color:var(--dim)">Pay full balance each month</span></div>';
+  else body.innerHTML='<div class="modal-field"><div class="modal-label">Loan name</div><input class="modal-input" id="dn" placeholder="e.g. Car finance"></div><div class="modal-row"><div class="modal-field"><div class="modal-label">Original balance</div><input class="modal-input" id="dorig" type="number" placeholder="0" inputmode="decimal"></div><div class="modal-field"><div class="modal-label">Interest rate %</div><input class="modal-input" id="drate" type="number" placeholder="0.0" step="0.1" inputmode="decimal"></div></div><div class="modal-row"><div class="modal-field"><div class="modal-label">Term (months)</div><input class="modal-input" id="dterm" type="number" placeholder="e.g. 48" inputmode="decimal"></div><div class="modal-field"><div class="modal-label">Monthly payment</div><input class="modal-input" id="dmo" type="number" placeholder="0" inputmode="decimal"></div></div><div class="modal-row"><div class="modal-field"><div class="modal-label">Loan start date</div><input class="modal-input" id="dstart" type="month"></div><div class="modal-field"><div class="modal-label">Payment day of month</div><input class="modal-input" id="dpday" type="number" placeholder="1" min="1" max="31" inputmode="decimal"></div></div><div style="font-size:11px;color:var(--dim);margin-top:4px">Current balance calculated automatically from start date.</div>';
+  document.getElementById('debtModalBg').classList.add('open');
+  setTimeout(function(){var f=document.getElementById('dn');if(f)f.focus();},150);
+}
+function closeDebtModal(){document.getElementById('debtModalBg').classList.remove('open');}
+function saveDebtModal(){
+  var n=document.getElementById('dn');if(!n||!n.value.trim())return;
+  var name=n.value.trim(),nid=S.nextId++;
+  if(debtModalType==='cc'){
+    var pf=document.getElementById('dpf')&&document.getElementById('dpf').checked;
+    var ccDueDay=document.getElementById('ddueday')?parseInt(document.getElementById('ddueday').value)||1:1;
+    var ccStart=document.getElementById('dstart')?document.getElementById('dstart').value:'';
+    S.creditCards.push({id:nid,name:name,balance:gn('dbal'),origBalance:gn('dbal'),apr:gn('dapr'),monthly:gn('dmo'),payFull:pf,dueDay:ccDueDay,startDate:ccStart});
+  } else {
+    var orig=gn('dorig'),rate=gn('drate'),term=gn('dterm'),mo=gn('dmo');
+    var sd=document.getElementById('dstart'),pd=document.getElementById('dpday');
+    var startDate=sd?sd.value:'',payDay=pd?(parseInt(pd.value)||1):1;
+    if(term>0&&orig>0&&rate>0&&!mo)mo=Math.round(loanCalcPmt(orig,rate,term)*100)/100;
+    var autoBal=startDate&&orig>0?loanCurrentBalance(orig,rate,mo,startDate,term,payDay):orig;
+    S.loans.push({id:nid,name:name,origBalance:orig,balance:Math.round(autoBal*100)/100,rate:rate,termMonths:term,monthly:mo,startDate:startDate,payDay:payDay});
+  }
+  closeDebtModal();syncDebt();
+}
+
+function exportPDF(){document.querySelectorAll('.screen').forEach(function(s){s.style.display='block';});window.print();document.querySelectorAll('.screen').forEach(function(s){s.style.display='none';});var a=document.querySelector('.screen.active');if(a)a.style.display='block';}
+
+// mortgage inputs now handled via updMortAccount
+
+// ── MORTGAGE ACCOUNTS ──
+function addMortAccount(){
+  if(!Array.isArray(S.mortgageAccounts))S.mortgageAccounts=[];
+  S.mortgageAccounts.push({id:S.nextId++,name:'Sub-account '+S.mortgageAccounts.length,balance:0,term:25,rate:4.5,over:0});
+  syncMortgageOverpayment();renderMortgage();persist();
+}
+function updMortAccount(idx,field,val){
+  if(!S.mortgageAccounts||!S.mortgageAccounts[idx])return;
+  S.mortgageAccounts[idx][field]=field==='name'?val:(parseFloat(val)||0);
+  syncMortgageOverpayment();renderMortgage();renderSpending();renderSummary();persist();
+}
+function delMortAccount(idx){
+  if(!S.mortgageAccounts||S.mortgageAccounts.length<=1)return;
+  S.mortgageAccounts.splice(idx,1);
+  syncMortgageOverpayment();renderMortgage();renderSpending();renderSummary();persist();
+}
+// ── REORDER ──
+function moveCatUp(type,catId){
+  var arr=type==='income'?S.incomeCategories:S.spendingCategories;
+  var idx=arr.findIndex(function(c){return c.id===catId;});
+  if(idx>0){var t=arr[idx-1];arr[idx-1]=arr[idx];arr[idx]=t;}
+  update();
+}
+function moveCatDown(type,catId){
+  var arr=type==='income'?S.incomeCategories:S.spendingCategories;
+  var idx=arr.findIndex(function(c){return c.id===catId;});
+  if(idx<arr.length-1){var t=arr[idx+1];arr[idx+1]=arr[idx];arr[idx]=t;}
+  update();
+}
+function moveItemUp(type,catId,itemId){
+  var arr=type==='income'?S.incomeCategories:S.spendingCategories;
+  var cat=arr.find(function(c){return c.id===catId;});if(!cat)return;
+  var idx=cat.items.findIndex(function(i){return i.id===itemId;});
+  if(idx>0){var t=cat.items[idx-1];cat.items[idx-1]=cat.items[idx];cat.items[idx]=t;}
+  update();
+}
+function moveItemDown(type,catId,itemId){
+  var arr=type==='income'?S.incomeCategories:S.spendingCategories;
+  var cat=arr.find(function(c){return c.id===catId;});if(!cat)return;
+  var idx=cat.items.findIndex(function(i){return i.id===itemId;});
+  if(idx<cat.items.length-1){var t=cat.items[idx+1];cat.items[idx+1]=cat.items[idx];cat.items[idx]=t;}
+  update();
+}
+
+function update(){mortgageAutoUpdate();syncMortgageOverpayment();renderIncome();renderSpending();renderPlan();renderPortfolio();renderMortgage();renderDebt();renderSummary();persist();}
+
+if(S.period==='weekly'){document.querySelectorAll('.period-btn').forEach(function(b,i){b.classList.toggle('active',i===1);});period='weekly';}
+// mortgage values loaded from S.mortgageAccounts via renderMortgage
+mortgageAutoUpdate();
+syncMortgageOverpayment();
+update();
+</script>
+</body>
+</html>
